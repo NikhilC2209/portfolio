@@ -65,9 +65,9 @@ import "../styles/global.css";
       }
     </script>
   </head>
-  <body class="bg-primary dark:bg-dk-primary w-full container mx-auto">
+  <body class="bg-primary w-full container mx-auto bg-[url('/tile_background4.png')]">
     <Nav client:visible posts={posts} />
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-4 w-5/6">
       <slot />
     </div>
     <TopButton client:only />

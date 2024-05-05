@@ -89,12 +89,23 @@ body {
   -o-transition: color 0.25s linear;
 }
 
-*::selection {
+/**::selection {
   background-color: theme(colors.text) !important;
   color: theme(colors.primary) !important;
+}*/
+
+*::selection {
+  background-color: theme(colors.bg-dark-main) !important;
+  color: theme(colors.neon-green-secondary) !important;
 }
 
-html.dark *::selection {
+/*html.dark *::selection {
   background-color: theme(colors.dk-text) !important;
   color: theme(colors.dk-primary) !important;
+}
+*/
+
+html.dark *::selection {
+  background-color: theme(colors.bg-dark-main) !important;
+  color: theme(colors.neon-green-secondary) !important;
 }

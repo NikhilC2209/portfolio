@@ -8,6 +8,8 @@ import Contact from "../components/contact_section/Contact";
 
 const { frontmatter } = Astro.props;
 
+console.log(frontmatter);
+
 const { title, date, img_path, img_alt } = frontmatter;
 // TODO: add tags here
 ---
@@ -60,7 +62,7 @@ const { title, date, img_path, img_alt } = frontmatter;
         prose-a:text-blue-600 prose-p:text-justify prose-img:rounded-xl
         prose-headings:underline"
         >
-          <slot />
+          <slot />                 {/* Render content using slot tag */}
         </div>
       </div>
 

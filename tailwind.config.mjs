@@ -10,10 +10,12 @@ export default {
 				'secondary': '#1D4CC4',
 				'accent': '#0D2563',
 				'text': '#353755',
-				'dk-primary': '#0C2432',
-				'dk-secondary': '#53C6FF',
+				'dk-primary': '#000000',
+				'dk-secondary': '#0FFF50',
 				'dk-accent': '#55C2C3',
 				'dk-text': '#C8DCF5',
+				'bg-dark-main': '#000000',
+				'neon-green-secondary': '#0FFF50', 
 			},
 		},
 	},
@@ -22,3 +24,6 @@ export default {
 		typography,
 	],
 }
+
+// 'dk-primary': '#0C2432',
+// 'dk-secondary': '#53C6FF',

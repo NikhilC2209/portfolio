@@ -1,0 +1,41 @@
+---
+import { storyblokEditable, renderRichText, RichTextSchema } from '@storyblok/astro'
+
+const mySchema = RichTextSchema;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Code } from 'astro:components';
+
+import { marked } from 'marked';
+
+const { blok } = Astro.props
+
+const rawContent = blok.content;
+const content = renderRichText(blok.content)
+
+const { title, description } = blok;
+
+import "../styles/blog.css";
+import "../styles/Highlight JS/styles/kimbie-light.css";
+
+---
+
+<BaseLayout>
+  <script>
+    import hljs from 'highlight.js';
+    hljs.highlightAll();
+  </script>
+
+  <article {...storyblokEditable(blok)}>
+    <h1 class="my-12">{blok.title}</h1>
+      <img
+      class="w-full h-[360px] lg:h-[450px] object-cover"
+      src={`${blok.image.filename}/m/1600x0`}
+    />
+    <div class="md:w-4/5">
+      <p>{blok.description}</p>
+      <Fragment set:html={content} />
+    </div>  
+{/*    <Code code="console.log('Hello world!')" lang="js" theme="light-plus"/> */}
+  </article>
+</BaseLayout>  

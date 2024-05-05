@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic);
+
+blockquote {
+  padding: 1.5rem; 
+  margin-top: 1rem;
+  margin-bottom: 1rem; 
+  border-left-width: 4px; 
+  border-color: #D1D5DB; 
+  background-color: #102030;
+}
+
+blockquote::before{
+  font-family:Arial;
+  content: "\201C";
+  color: #fff;
+  font-size: 6em;
+}
+
+span > img {
+  margin: 0 auto;
+}
+
+p > img {
+  margin: 0 auto;
+}
+
+blockquote p {
+  display: inline;
+  margin-bottom: 1rem 0;
+}
+
+blockquote > p > i > span {
+  font-size: 1.4rem;
+  font-style: italic; 
+  font-weight: 500; 
+  line-height: 1.625; 
+  color: white !important;
+}
+
+/*article > ul {
+  list-style-type: disc;
+  color: white;
+  margin: 1em;
+}*/
+
+p > a {
+  color: #0FFF50;
+  text-decoration: underline;
+}
+
+ul > li {
+/*  list-style: "\2746";
+  color: #0FFF50;*/
+/*  border-width: 5px;*/
+  list-style-type:none;
+  background-image: url(/Doodles/icons8-arrow-24.png);
+  background-repeat: no-repeat;
+  padding-left: 2em;
+  margin: 1em 0;
+}
+
+.inline-code {
+  background-color: #4d4d4d;
+  font-size: 0.9rem;
+  padding: 0.3rem;
+  color: #ff6666;
+  border-radius: 0.35em;
+}

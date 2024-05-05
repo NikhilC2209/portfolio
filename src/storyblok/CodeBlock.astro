@@ -1,0 +1,12 @@
+---
+import { storyblokEditable, renderRichText } from '@storyblok/astro'
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Code } from 'astro:components';
+
+const { code } = Astro.props
+const title="Posts"
+
+// console.log(blok); 
+console.log(code); 
+---
+  <Code code={code} lang="js" theme="light-plus"/>  
