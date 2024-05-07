@@ -1,20 +1,20 @@
 ---
 const { article, tags, link } = Astro.props
 
-const planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter"]
+const football = ["Football", "Arsenal", "Barcelona", "Liverpool", "Man City"]
 const coding = ["Python", "R", "Javascript", "React", "Next JS", "Astro", "Go", "C", "C++"]
 
 const codingTags = tags.filter((tag) => coding.includes(tag));
-const planetTags = tags.filter((tag) => planets.includes(tag)); 
+const footballTags = tags.filter((tag) => football.includes(tag)); 
 
 ---
  
 <article class="">
 <a href={`/${link}`}>
-  <div class="my-4 justify-center md:w-full group sm:flex space-x-6 shadow-lime-500/20 shadow-2xl hover:rounded-2xl">
+  <div class="my-4 justify-center transition ease-in-out duration-300 hover:scale-110 md:w-full group sm:flex space-x-6 hover:shadow-[-1px_-1px_20px_6px_rgba(15,255,80,_0.2)] backdrop-blur-md shadow-2xl">
     <img class="mx-auto w-full md:w-1/2 h-40 md:h-80 object-fill" alt="art cover" loading="lazy" src={`${article.image.filename}`} />
     <div class="sm:w-8/12">
-        <h1 class="text-md">
+        <h1 class="text-md my-4 mr-3">
             {article.title}
         </h1>
         <div class="my-3">
@@ -23,7 +23,7 @@ const planetTags = tags.filter((tag) => planets.includes(tag));
 
       }
       {
-          planetTags.map((tag) => <span class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-1 rounded dark:bg-green-900 dark:text-green-300">{tag}</span>)
+          footballTags.map((tag) => <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{tag}</span>)
 
       }
         </div>

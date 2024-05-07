@@ -1,7 +1,13 @@
+@import url(https://fonts.googleapis.com/css2?family=Open+Sans);
+@import url(https://fonts.googleapis.com/css2?family=Orbitron:wght@700);
+@import url(https://fonts.googleapis.com/css2?family=Poppins);
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic);
+
+body {
+  font-family: "Orbitron", sans-serif;
+}
 
 blockquote {
   padding: 1.5rem; 
@@ -37,7 +43,7 @@ blockquote > p > i > span {
   font-style: italic; 
   font-weight: 500; 
   line-height: 1.625; 
-  color: white !important;
+  color: white;
 }
 
 /*article > ul {
@@ -51,7 +57,7 @@ p > a {
   text-decoration: underline;
 }
 
-ul > li {
+ul > li > p {
 /*  list-style: "\2746";
   color: #0FFF50;*/
 /*  border-width: 5px;*/
@@ -68,4 +74,29 @@ ul > li {
   padding: 0.3rem;
   color: #ff6666;
   border-radius: 0.35em;
+  white-space: nowrap;
+}
+
+p {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.15rem;
+  margin: 1.5rem 0;
+  color: white !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Orbitron", sans-serif;
+  margin: 1.5rem 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+.caption {
+  font-style: italic;
 }

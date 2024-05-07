@@ -26,14 +26,13 @@ import "../styles/Highlight JS/styles/kimbie-light.css";
     hljs.highlightAll();
   </script>
 
-  <article {...storyblokEditable(blok)}>
-    <h1 class="my-12">{blok.title}</h1>
+  <article {...storyblokEditable(blok)} class="backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
+    <h1 class="my-12 text-5xl">{blok.title}</h1>
       <img
       class="w-full h-[360px] lg:h-[450px] object-cover"
       src={`${blok.image.filename}/m/1600x0`}
     />
-    <div class="md:w-4/5">
-      <p>{blok.description}</p>
+    <div class="w-11/12">
       <Fragment set:html={content} />
     </div>  
 {/*    <Code code="console.log('Hello world!')" lang="js" theme="light-plus"/> */}
