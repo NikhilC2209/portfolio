@@ -1,7 +1,12 @@
 ---
-import { storyblokEditable, renderRichText, RichTextSchema } from '@storyblok/astro'
+import { storyblokEditable, renderRichText, RichTextSchema } from '@storyblok/astro';
+import RichTextRenderer from "storyblok-rich-text-astro-renderer/RichTextRenderer.astro";
+import { RichTextType } from "storyblok-rich-text-astro-renderer";
+import Link from "../custom_components/Link.astro";
 
-const mySchema = RichTextSchema;
+import { YouTube } from 'astro-embed';
+
+import Text from "../components/Text.astro";
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Code } from 'astro:components';
@@ -12,6 +17,13 @@ const { blok } = Astro.props
 
 const rawContent = blok.content;
 const content = renderRichText(blok.content)
+
+// var i=0;
+
+// while(i<blok.content.content.length) {
+//   console.log(blok.content.content[i]);
+//   i++;
+// }
 
 const { title, description } = blok;
 
@@ -26,14 +38,33 @@ import "../styles/Highlight JS/styles/kimbie-light.css";
     hljs.highlightAll();
   </script>
 
-  <article {...storyblokEditable(blok)} class="backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
+
+<article class="backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
+{/* <article {...storyblokEditable(blok)} class="backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]"> */}
     <h1 class="my-12 text-5xl">{blok.title}</h1>
       <img
       class="w-full h-[360px] lg:h-[450px] object-cover"
       src={`${blok.image.filename}/m/1600x0`}
     />
     <div class="w-11/12">
-      <Fragment set:html={content} />
+      {/* <Fragment set:html={content} /> */}
+      <RichTextRenderer 
+        content={blok.content}
+        schema={{
+        marks: {
+          link: ({ attrs }) => {
+          const { custom, ...restAttrs } = attrs;
+
+          return {
+            component: Link,
+            props: {
+              link: { ...custom, ...restAttrs },
+            },
+          };
+        },
+        }
+      }}
+         {...storyblokEditable(blok)} />
     </div>  
 {/*    <Code code="console.log('Hello world!')" lang="js" theme="light-plus"/> */}
   </article>

@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { Link } from "storyblok-rich-text-astro-renderer";
+import { YouTube } from 'astro-embed';
+
+export interface Props extends HTMLAttributes<"a"> {
+  link: Link["attrs"];
+}
+
+const {
+  link: { href, target },
+  ...props
+} = Astro.props;
+
+const regex = /^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be)\/watch.+$/
+const res = regex.test(href); 
+
+---
+{(res) ?
+<YouTube class="mx-auto" id={href} {target} {...props} /> : 
+<a {href} {target} {...props}><slot /></a>
+}
