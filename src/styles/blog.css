@@ -53,10 +53,12 @@ p > a {
   text-decoration: underline;
 }
 
-ul > li > p {
+article ul > li {
 /*  list-style: "\2746";
   color: #0FFF50;*/
 /*  border-width: 5px;*/
+  color: white;
+  font-size: 1.15rem;
   list-style-type:none;
   background-image: url(/Doodles/icons8-arrow-24.png);
   background-repeat: no-repeat;
@@ -78,6 +80,7 @@ p {
   font-size: 1.15rem;
   margin: 1.5rem 0;
   color: white !important;
+  line-height: 1.8rem;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -95,4 +98,14 @@ h3 {
 
 .caption {
   font-style: italic;
+}
+
+p > b, li > b {
+  color: #0FFF50;
+  font-size: 1.2rem;
+}
+
+.astro-code {
+  padding: 2rem;
+  margin: 2rem 0;
 }

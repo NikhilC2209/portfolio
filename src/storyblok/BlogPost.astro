@@ -3,6 +3,7 @@ import { storyblokEditable, renderRichText, RichTextSchema } from '@storyblok/as
 import RichTextRenderer from "storyblok-rich-text-astro-renderer/RichTextRenderer.astro";
 import { RichTextType } from "storyblok-rich-text-astro-renderer";
 import Link from "../custom_components/Link.astro";
+import { Code } from "astro:components";
 
 import { YouTube } from 'astro-embed';
 
@@ -19,9 +20,21 @@ const rawContent = blok.content;
 const content = renderRichText(blok.content)
 
 // var i=0;
+// var j=0;
 
 // while(i<blok.content.content.length) {
 //   console.log(blok.content.content[i]);
+//   var conArray = blok.content.content[i].content;
+//   // while(conArray!=undefined && j<conArray.length) {
+//   //   console.log(conArray[j]);
+//   //   if(conArray[j].marks!=undefined) {
+//   //     // console.log(conArray[j]);
+//   //     // console.log("SPACE!!!!!!!!!!!!!!!")
+//   //     // console.log(conArray[j].marks);
+//   //   }
+//   //   j++;
+//   // }
+//   // j=0;
 //   i++;
 // }
 
@@ -33,10 +46,10 @@ import "../styles/Highlight JS/styles/kimbie-light.css";
 ---
 
 <BaseLayout>
-  <script>
+{/*  <script>
     import hljs from 'highlight.js';
     hljs.highlightAll();
-  </script>
+  </script> */}
 
 
 <article class="backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
@@ -51,6 +64,16 @@ import "../styles/Highlight JS/styles/kimbie-light.css";
       <RichTextRenderer 
         content={blok.content}
         schema={{
+        nodes: {
+          code_block: ({ attrs, content }) => ({
+          component: Code, // native Astro Code component
+          props: {
+            lang: attrs.class?.split("-")[1],
+            theme: "github-dark",
+            code: content?.[0].text,
+            },
+          }),
+        },
         marks: {
           link: ({ attrs }) => {
           const { custom, ...restAttrs } = attrs;
