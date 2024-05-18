@@ -1,0 +1,58 @@
+---
+import { storyblokEditable, renderRichText, RichTextSchema } from '@storyblok/astro';
+import RichTextRenderer from "storyblok-rich-text-astro-renderer/RichTextRenderer.astro";
+import { RichTextType } from "storyblok-rich-text-astro-renderer";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const { blok, tags } = Astro.props
+
+const rawContent = blok.content;
+const content = renderRichText(blok.content)
+
+const { title } = blok;
+
+import "../styles/blog.css";
+import "../styles/Highlight JS/styles/kimbie-light.css";
+
+---
+
+<BaseLayout>
+<article class="backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
+	<h1 class="w-full lg:w-10/12 lg:ml-4 my-12 text-4xl sm:text-5xl">{blok.title}</h1>
+	<img
+      class="mx-auto w-full md:w-3/4"
+      src={`${blok.image.filename}`}
+    />
+    <div class="w-full lg:w-11/12 content lg:px-2">
+        {/* <Fragment set:html={content} /> */}
+        <RichTextRenderer 
+          content={blok.content}
+          schema={{
+          nodes: {
+            code_block: ({ attrs, content }) => ({
+            component: Code, // native Astro Code component
+            props: {
+              lang: attrs.class?.split("-")[1],
+              theme: "github-dark",
+              code: content?.[0].text,
+              },
+            }),
+          },
+          marks: {
+            link: ({ attrs }) => {
+            const { custom, ...restAttrs } = attrs;
+
+            return {
+              component: Link,
+              props: {
+                link: { ...custom, ...restAttrs },
+              },
+            };
+          },
+          }
+        }}
+           {...storyblokEditable(blok)} />
+    </div>
+</article>
+</BaseLayout>

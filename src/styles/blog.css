@@ -32,6 +32,8 @@ p > img {
 blockquote p {
   display: inline;
   margin-bottom: 1rem 0;
+  font-style: italic;
+  line-height: 1.625; 
 }
 
 blockquote > p > i > span {
@@ -53,7 +55,7 @@ p > a {
   text-decoration: underline;
 }
 
-article ul > li {
+.content ul > li {
 /*  list-style: "\2746";
   color: #0FFF50;*/
 /*  border-width: 5px;*/
@@ -64,6 +66,13 @@ article ul > li {
   background-repeat: no-repeat;
   padding-left: 2em;
   margin: 1em 0;
+}
+
+.sidebar ul > li {
+  list-style-type: ">";
+  padding: 0 0.6rem;
+  line-height: 2rem;
+  font-size: 1.3rem;
 }
 
 .inline-code {

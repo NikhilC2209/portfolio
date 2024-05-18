@@ -3,6 +3,7 @@ import { storyblokEditable, useStoryblokApi } from '@storyblok/astro'
 import BlogCard from '../components/blog/BlogCard.astro'
 
 import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/blog.css";
  
 const { blok} = Astro.props
  
@@ -22,7 +23,7 @@ console.log(articles);
 ---
 
 <BaseLayout title={title}>
-<section class="mx-6 my-12" {...storyblokEditable(blok)}>
+<section class="mx-6 my-12 w-11/12 lg:w-3/4 mx-auto" {...storyblokEditable(blok)}>
   <h2 class="text-6xl text-[#50b0ae] font-bold text-center mb-12">
     {blok}
     Hellew

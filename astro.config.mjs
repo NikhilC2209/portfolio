@@ -35,6 +35,7 @@ export default defineConfig({
           feature: "storyblok/Feature",
           grid: "storyblok/Grid",
           teaser: "storyblok/Teaser",
+          thoughtPost: 'storyblok/ThoughtPost',
           // Add your components here
       },
       apiOptions: {

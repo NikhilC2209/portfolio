@@ -11,10 +11,10 @@ const footballTags = tags.filter((tag) => football.includes(tag));
  
 <article class="">
 <a href={`/${link}`}>
-  <div class="my-4 justify-center transition ease-in-out duration-300 hover:scale-110 md:w-full group sm:flex space-x-6 hover:shadow-[-1px_-1px_20px_6px_rgba(15,255,80,_0.2)] backdrop-blur-md shadow-2xl">
-    <img class="mx-auto w-full md:w-1/2 h-40 md:h-80 object-fill" alt="art cover" loading="lazy" src={`${article.image.filename}`} />
+  <div class="my-4 justify-center transition ease-in-out duration-300 md:w-full group space-x-2 sm:space-x-6 sm:flex hover:shadow-[-1px_-1px_20px_6px_rgba(15,255,80,_0.2)] backdrop-blur-md shadow-2xl">
+    <img class="mx-auto w-full md:w-1/2 h-40 sm:h-80 object-fill" alt="art cover" loading="lazy" src={`${article.image.filename}`} />
     <div class="sm:w-8/12">
-        <h1 class="text-md my-4 mr-3">
+        <h1 class="text-3xl my-4 mr-3">
             {article.title}
         </h1>
         <div class="my-3">
