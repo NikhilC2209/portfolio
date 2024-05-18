@@ -9,7 +9,7 @@ export default {
 				'primary': '#FFF',
 				'secondary': '#1D4CC4',
 				'accent': '#0D2563',
-				'text': '#353755',
+				'text': '#ffffff',
 				'dk-primary': '#000000',
 				'dk-secondary': '#0FFF50',
 				'dk-accent': '#55C2C3',
@@ -27,3 +27,4 @@ export default {
 
 // 'dk-primary': '#0C2432',
 // 'dk-secondary': '#53C6FF',
+// 'text': '#353755',
