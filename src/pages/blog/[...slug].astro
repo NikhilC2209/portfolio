@@ -5,9 +5,12 @@ import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
 export async function getStaticPaths() {
   const sbApi = useStoryblokApi();
 
+  console.log("Enter function")
+
   const { data } = await sbApi.get("cdn/stories", {
     content_type: "blogPost",
-    version: import.meta.env.DEV ? "draft" : "published",
+    // version: import.meta.env.DEV ? "draft" : "published",
+    version: "draft",
   });
 
   const stories = Object.values(data.stories);
@@ -19,10 +22,13 @@ export async function getStaticPaths() {
   });
 }
 
+console.log("Load Page")
+
 const sbApi = useStoryblokApi();
 const { slug } = Astro.params;
 const { data } = await sbApi.get(`cdn/stories/blog/${slug}`, {
-  version: import.meta.env.DEV ? "draft" : "published",
+  // version: import.meta.env.DEV ? "draft" : "published",
+  version: "draft",
 });
 
 const story = data.story;
