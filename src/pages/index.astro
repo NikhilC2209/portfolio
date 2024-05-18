@@ -8,7 +8,8 @@ import Blog from "../components/post_section/Blog.astro";
 
 import { Image } from "astro:assets";
 
-const allPosts = await Astro.glob("./posts/*.md");
+// const allPosts = await Astro.glob("./posts/*.md");
+const allPosts = ""
 ---
 
 <BaseLayout title="Home">
@@ -58,7 +59,7 @@ const allPosts = await Astro.glob("./posts/*.md");
     class="lg:h-screen lg:m-0 my-20 flex-col flex justify-center w-full"
     id="blog"
   >
-    <Blog posts={allPosts} />
+    {/* <Blog posts={allPosts} /> */}
   </section>
 
   <section

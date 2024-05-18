@@ -1,8 +1,10 @@
 # Static files
 public_local/
+posts/
 
 # build output
 dist/
+.vercel/
 
 # generated types
 .astro/
