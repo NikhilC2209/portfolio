@@ -5,47 +5,42 @@ import { loadEnv } from 'vite';
 import react from "@astrojs/react";
 import robotsTxt from "astro-robots-txt";
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
-
-import basicSsl from '@vitejs/plugin-basic-ssl'
-
+import basicSsl from '@vitejs/plugin-basic-ssl';
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
-
 import sitemap from "@astrojs/sitemap";
+
+import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
   vite: {
     plugins: [basicSsl()],
     server: {
-      https: true,
-    },
+      https: true
+    }
   },
   markdown: {
-    rehypePlugins: [rehypeAccessibleEmojis],
+    rehypePlugins: [rehypeAccessibleEmojis]
   },
   site: 'https://astro-portfolio-template.pages.dev',
-  integrations: [
-      storyblok({
-        accessToken: env.STORYBLOK_TOKEN,
-        components: {
-          codeBlock: 'storyblok/CodeBlock', 
-          blogPost: 'storyblok/BlogPost',
-          blogPostList: 'storyblok/BlogPostList',
-          page: 'storyblok/Page',
-          feature: "storyblok/Feature",
-          grid: "storyblok/Grid",
-          teaser: "storyblok/Teaser",
-          thoughtPost: 'storyblok/ThoughtPost',
-          // Add your components here
-      },
-      apiOptions: {
-        // Choose your Storyblok space region
-        region: 'us', // optional,  or 'eu' (default)
-      },  
-    }),
-      tailwind(), 
-      react(), 
-      robotsTxt(), 
-      sitemap()
-    ]
+  integrations: [storyblok({
+    accessToken: env.STORYBLOK_TOKEN,
+    components: {
+      codeBlock: 'storyblok/CodeBlock',
+      blogPost: 'storyblok/BlogPost',
+      blogPostList: 'storyblok/BlogPostList',
+      page: 'storyblok/Page',
+      feature: "storyblok/Feature",
+      grid: "storyblok/Grid",
+      teaser: "storyblok/Teaser",
+      thoughtPost: 'storyblok/ThoughtPost'
+      // Add your components here
+    },
+    apiOptions: {
+      // Choose your Storyblok space region
+      region: 'us' // optional,  or 'eu' (default)
+    }
+  }), tailwind(), react(), robotsTxt(), sitemap()],
+  output: "server",
+  adapter: vercel()
 });
