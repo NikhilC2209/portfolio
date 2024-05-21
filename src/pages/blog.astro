@@ -1,6 +1,8 @@
 ---
 import { storyblokEditable, useStoryblokApi } from '@storyblok/astro'
 import BlogCard from '../components/blog/BlogCard.astro'
+import Example from "../components/about_section/Example.jsx";
+import Dismissible from "../components/Dismissible.jsx";
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/blog.css";
@@ -9,25 +11,29 @@ const { blok} = Astro.props
  
 const storyblokApi = useStoryblokApi()
 const { data } = await storyblokApi.get(`cdn/stories/`, {
-  version: 'draft', // or 'published'
+  version: 'published', // or 'published'
   starts_with: "blog/",
   content_type: "blogPost",
   is_startpage: 0,
 })
  
 const articles = data.stories
-const title="Posts"
+const title="Blog"
 
-console.log(articles);
+const text=["v0.0.8", 1000]
 
 ---
 
 <BaseLayout title={title}>
 <section class="mx-6 my-12 w-11/12 lg:w-3/4 mx-auto" {...storyblokEditable(blok)}>
-  <h2 class="text-6xl text-[#50b0ae] font-bold text-center mb-12">
-    {blok}
-    Hellew
-  </h2>
+  <div class="flex flex-row justify-center items-center space-x-3">
+    <h2 class="text-6xl font-bold text-center mb-12">
+      Blog           
+      <h2>
+        <Example text={text} size="text-xl" speed={10} client:visible />
+      </h2>
+    </h2>
+  </div>
   <ul class="grid grid-cols-1 gap-6 md:grid-cols-1">
     {
       articles?.length &&
@@ -43,3 +49,5 @@ console.log(articles);
   </ul>
 </section>
 </BaseLayout>
+
+<Dismissible client:visible />

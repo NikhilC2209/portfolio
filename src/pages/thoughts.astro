@@ -1,11 +1,13 @@
 ---
 import { storyblokEditable, useStoryblokApi } from '@storyblok/astro'
 import ThoughtCard from '../components/thoughts/ThoughtCard.astro'
+import Example from "../components/about_section/Example.jsx";
+import Dismissible from "../components/Dismissible.jsx";
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/thoughts.css";
  
-const { blok} = Astro.props
+const { blok } = Astro.props
  
 const storyblokApi = useStoryblokApi()
 const { data } = await storyblokApi.get(`cdn/stories/`, {
@@ -16,9 +18,9 @@ const { data } = await storyblokApi.get(`cdn/stories/`, {
 })
  
 const articles = data.stories
-const title="Posts"
+const title="Thoughts"
 
-console.log(articles);
+const text=["A safe space for all those 3 A.M. thoughts", 1000]
 
 ---
 
@@ -26,22 +28,23 @@ console.log(articles);
 <section class="" {...storyblokEditable(blok)}>
   <div class="w-full mx-auto h-[80vh] flex-col backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
     <div class="w-full h-3/4 flex flex-col lg:flex-row justify-center items-center">
-      <h2 class="text-6xl text-[#50b0ae] font-bold text-center mb-12">
+      <h2 class="text-6xl font-bold text-center mb-12">
         Thoughts
       </h2>
       <img width="300" height="300" class="" src="/thought_guy.png" />
     </div>
     <div>
       <h2>
-        A safe space for all those 3 A.M. thoughts
+        <Example text={text} size="text-2xl" speed={60} className="text-6xl" client:visible />
       </h2>
     </div>  
   </div>
-  <ul class="grid grid-cols-1 gap-6 md:grid-cols-3 w-3/4 mx-auto">
+  <ul class="grid grid-cols-1 md:gap-10 md:grid-cols-3 lg:w-5/6 mx-auto">
     {
       articles?.length &&
         articles.map((article) => {
           article.content.slug = article.slug
+          console.log(article.full_slug)
           return (
             <li>
               <ThoughtCard article={article.content} tags={article.tag_list} link={article.full_slug}/>
@@ -52,3 +55,4 @@ console.log(articles);
   </ul>
 </section>
 </BaseLayout>
+<Dismissible client:visible />

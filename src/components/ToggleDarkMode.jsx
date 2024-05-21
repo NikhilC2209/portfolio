@@ -44,10 +44,11 @@ export default function DarkModeUtility() {
 
   return (
     <button
-      className="self-center"
+      className="self-center cursor-not-allowed"
       onClick={handleThemeMode}
       alt={`Change theme to ${theme === "dark" ? "light" : "dark"} mode`}
       aria-label="Toggle dark mode"
+      disabled
     >
       <span className="dark:hidden">
         <svg

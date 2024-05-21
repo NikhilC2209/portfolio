@@ -9,9 +9,9 @@ export default function Nav({ posts }) {
 
   const navLinks = [
     { name: "About", href: "/#about" },
-    { name: "Projects", href: "/#projects" },
-    { name: "Blog", href: "/#blog" },
-    { name: "Contact", href: "/#contact" },
+    { name: "Projects", href: "/#temp" },
+    { name: "Blog", href: "/blog" },
+    { name: "Thoughts", href: "/thoughts" },
   ];
 
   const extractInitials = (name) => {
@@ -26,26 +26,27 @@ export default function Nav({ posts }) {
   return (
     <>
       {/* <nav className="container mx-auto top-0 z-50 absolute bg-primary dark:bg-dk-primary"> */}
-      <nav className="container mx-auto top-0 z-50 sticky bg-primary dark:bg-dk-primary">
+      <nav className="w-screen mx-auto top-0 z-50 sticky bg-primary dark:bg-dk-primary">
         <div className="w-full px-6 py-2 flex justify-between items-center">
           <a className="font-bold text-2xl lg:text-4xl" href="/#">
-            <span className="text-secondary dark:text-dk-secondary">
-              {"</" + extractInitials(info.name) + ">"}
-            </span>
+            <h1 className="text-secondary text-2xl md:text-4xl m-0 dark:text-dk-secondary">
+              {/* {"</" + extractInitials(info.name) + ">"} */}
+              {"<" + "Portfolio" + " />"}
+            </h1>
           </a>
 
           {/* Button for CV download */}
-          <a
-            href={info.cv}
-            download
-            className="px-4 py-2 border-2 rounded text-secondary dark:text-dk-secondary border-secondary dark:border-dk-secondary hover:bg-secondary dark:hover:bg-dk-secondary hover:text-primary dark:hover:text-primary cursor-pointer"
-          >
-            <i className="fas fa-download mr-2"></i>
-            <span className="hidden lg:inline-block font-medium">
-              Download CV
-            </span>
-            <span className="lg:hidden font-medium">CV</span>
-          </a>
+          {/* <a */}
+          {/*   href={info.cv} */}
+          {/*   download */}
+          {/*   className="px-4 py-2 border-2 rounded text-secondary dark:text-dk-secondary border-secondary dark:border-dk-secondary hover:bg-secondary dark:hover:bg-dk-secondary hover:text-primary dark:hover:text-primary cursor-pointer" */}
+          {/* > */}
+          {/*   <i className="fas fa-download mr-2"></i> */}
+          {/*   <h1 className="hidden lg:inline-block font-medium"> */}
+          {/*     Download CV */}
+          {/*   </h1> */}
+          {/*   <span className="lg:hidden font-medium">CV</span> */}
+          {/* </a> */}
 
           <div className="inline-flex lg:hidden text-secondary dark:text-dk-secondary">
             <Hamburger
@@ -60,11 +61,11 @@ export default function Nav({ posts }) {
                   key={index}
                   className="p-4 hover:text-accent dark:hover:text-dk-accent"
                 >
-                  <a href={link.href}>{link.name}</a>
+                  <a href={link.href}><h1 class="text-2xl m-0">{link.name}</h1></a>
                 </li>
               ))}
               <li className="px-4 flex">
-                <ToggleDarkMode />
+                <ToggleDarkMode disabled/>
               </li>
               <li className="px-4 flex">
                 <Search posts={posts} />
@@ -84,7 +85,7 @@ export default function Nav({ posts }) {
             {navLinks.map((link, index) => (
               <li key={index} className="p-4">
                 <a href={link.href} onClick={() => setIsNavOpen(false)}>
-                  {link.name}
+                  <h1>{link.name}</h1>
                 </a>
               </li>
             ))}

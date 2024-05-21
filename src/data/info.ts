@@ -1,18 +1,19 @@
 export const info = {
-  name: "Bart Simpson",
+  name: "Nikhil Chapre",
   brief_description:
     "I'm a mischievous full stack developer with a knack for troublemaking.",
   role: "Full Stack Developer",
-  picture: "/pic.png",
+  picture: "/portfolio.jpg",
   picture_alt: "Bart Simpson",
   location: "Springfield, USA",
   cv: "/resume.pdf",
 
   about: {
-    description: `I'm a full stack developer with a passion for causing a little chaos in web development.
-    I have a solid foundation in computer science, although I prefer skateboarding over studying.
-    I excel in building web applications using React, Node.js, and MongoDB.
-    I'm known for my sharp wit and quick thinking, traits that serve me well in coding and pranks alike.
+    description: `I'm a full stack developer with a passion for experimenting with different tech stacks.
+    I have a solid foundation in Computer Science and take deep interest in Web Security & Cryptography.
+    I am proficient in building web applications using MERN, Next JS and Astro.
+    I'm currently exploring the realms of Computer Vision specifically Object Detection & Segmentation.
+    I also like public speaking and mentoring, you can check out my blog to get more info.
     Looking for a challenge? Let's create something memorable together.`,
     education: [
       {

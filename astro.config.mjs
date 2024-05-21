@@ -23,19 +23,20 @@ export default defineConfig({
     rehypePlugins: [rehypeAccessibleEmojis]
   },
   site: 'https://astro-portfolio-template.pages.dev',
-  integrations: [storyblok({
-    accessToken: env.STORYBLOK_TOKEN,
-    components: {
-      codeBlock: 'storyblok/CodeBlock',
-      blogPost: 'storyblok/BlogPost',
-      blogPostList: 'storyblok/BlogPostList',
-      page: 'storyblok/Page',
-      feature: "storyblok/Feature",
-      grid: "storyblok/Grid",
-      teaser: "storyblok/Teaser",
-      thoughtPost: 'storyblok/ThoughtPost'
-      // Add your components here
-    },
+  integrations: [
+    storyblok({
+      accessToken: env.STORYBLOK_TOKEN,
+      components: {
+        codeBlock: 'storyblok/CodeBlock',
+        blogPost: 'storyblok/BlogPost',
+        blogPostList: 'storyblok/BlogPostList',
+        page: 'storyblok/Page',
+        feature: "storyblok/Feature",
+        grid: "storyblok/Grid",
+        teaser: "storyblok/Teaser",
+        thoughtPost: 'storyblok/ThoughtPost'
+        // Add your components here
+      },
     apiOptions: {
       // Choose your Storyblok space region
       region: 'us' // optional,  or 'eu' (default)

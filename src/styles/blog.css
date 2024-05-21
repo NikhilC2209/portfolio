@@ -52,11 +52,10 @@
 }
 
 .content ul > li {
-/*  list-style: "\2746";
-  color: #0FFF50;*/
-/*  border-width: 5px;*/
+  font-family: "Poppins", sans-serif;
+  line-height: 1.5rem;
   color: white;
-  font-size: 1.15rem;
+  font-size: 1rem;
   list-style-type:none;
   background-image: url(/icons8-arrow-24.png);
   background-repeat: no-repeat;
@@ -82,19 +81,25 @@
 
 .content p {
   font-family: "Poppins", sans-serif;
-  font-size: 1.15rem;
+  font-size: 1rem;
   margin: 1.5rem 0;
   color: white !important;
   line-height: 1.8rem;
 }
 
-.content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
+.content h1 {
+  font-family: "Orbitron", sans-serif;
+  margin: 2.5rem 0 1.5rem 0;
+}
+
+.content h3, .content h4, .content h5, .content h6 {
   font-family: "Orbitron", sans-serif;
   margin: 1.5rem 0;
 }
 
 .content h2 {
   font-size: 1.5rem;
+  margin: 2.5rem 0 1.5rem 0;
 }
 
 .content h3 {
@@ -107,10 +112,31 @@
 
 .content b {
   color: #0FFF50;
-  font-size: 1.2rem;
 }
 
 .astro-code {
   padding: 2rem;
   margin: 2rem 0;
+}
+
+@media screen and (min-width: 768px) {
+  .content p {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.15rem;
+    margin: 1.5rem 0;
+    color: white !important;
+    line-height: 1.8rem;
+  }
+
+  .content ul > li {
+    font-family: "Poppins", sans-serif;
+    line-height: 1.7rem;
+    color: white;
+    font-size: 1.15rem;
+    list-style-type:none;
+    background-image: url(/icons8-arrow-24.png);
+    background-repeat: no-repeat;
+    padding-left: 2em;
+    margin: 1em 0;
+  }
 }

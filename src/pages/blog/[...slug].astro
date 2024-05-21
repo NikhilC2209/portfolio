@@ -1,6 +1,7 @@
 ---
 import { useStoryblokApi } from '@storyblok/astro'
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
+import Dismissible from "../../components/Dismissible.jsx";
 
 export async function getStaticPaths() {
   const sbApi = useStoryblokApi();
@@ -43,9 +44,10 @@ console.log(story.tag_list)
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Storyblok & Astro</title>
+    <title>{story.name}</title>
   </head>
   <body>
-    <StoryblokComponent blok={story.content} tags={story.tag_list}/>
+    <StoryblokComponent blok={story.content} tags={story.tag_list} date={story.content.date} link={story.content.medium_link.url}/>
+    <Dismissible client:visible />
   </body>
 </html>

@@ -5,11 +5,45 @@ import ProjectCarousel from "../components/projects_section/ProjectCarousel";
 import Contact from "../components/contact_section/Contact";
 import About from "../components/about_section/About";
 import Blog from "../components/post_section/Blog.astro";
+import Example from "../components/about_section/Example.jsx";
 
 import { Image } from "astro:assets";
 
 // const allPosts = await Astro.glob("./posts/*.md");
 const allPosts = ""
+
+// const ExampleComponent = () => {
+//   return (
+//     <TypeAnimation
+//       sequence={[
+//         'One', // Types 'One'
+//         1000, // Waits 1s
+//         'Two', // Deletes 'One' and types 'Two'
+//         2000, // Waits 2s
+//         'Two Three', // Types 'Three' without deleting 'Two'
+//         () => {
+//           console.log('Sequence completed');
+//         },
+//       ]}
+//       wrapper="span"
+//       cursor={true}
+//       repeat={Infinity}
+//       style={{ fontSize: '2em', display: 'inline-block' }}
+//     />
+//   );
+// };
+
+const about=[
+        // Same substring at the start will only be typed out once, initially
+        'Full Stack Developer',
+        1000, // wait 1s before replacing "Mice" with "Hamsters"
+        'Public Speaker',
+        1000,
+        'Technical Writer',
+        1000,
+        'Research Enthusiast',
+        1000,
+      ]
 ---
 
 <BaseLayout title="Home">
@@ -23,22 +57,22 @@ const allPosts = ""
           alt={info.picture_alt}
           width={200}
           height={200}
-          class="lg:h-96 lg:w-96 h-40 w-40 rounded-full object-fill object-center space-x-8"
+          class="lg:h-[32rem] lg:w-[36rem] h-40 w-40 rounded-full -rotate-6 space-x-8"
         />
       </div>
 
       <div class="flex flex-col lg:mx-8 leading-relaxed space-y-4">
-        <h1 class="text-3xl lg:text-5xl font-bold font-serif">
-          Hi, I'm <span class="bg-clip-text animate-pulse typewriter">
+        <h1 class="text-3xl lg:text-5xl font-bold">
+          Hi, I'm <span class="bg-clip-text">
             {info.name}</span
           >
         </h1>
-        <h2 class="text-text dark:text-dk-text">{info.brief_description}</h2>
-        <p class="text-2xl">
-          Based in <span class="text-secondary dark:text-dk-secondary"
-            >{info.location}</span
-          >
-        </p>
+        <div class="flex flex-col lg:flex-row items-center space-x-3">
+          <h2 class="text-white text-3xl">I'm a </h2> 
+          <h2>
+            <Example text={about} size="text-2xl" client:visible />
+          </h2>
+        </div>  
       </div>
     </div>
   </section>
@@ -48,18 +82,18 @@ const allPosts = ""
     <About about={info.about} client:visible />
   </section>
 
-  <section
+{/*   <section
     class="lg:h-screen lg:m-0 my-20 mx-2 flex-col flex justify-center w-full"
     id="projects"
   >
     <ProjectCarousel projects={info.projects} client:only />
-  </section>
+  </section> */}
 
-  <section
+{/*  <section
     class="lg:h-screen lg:m-0 my-20 flex-col flex justify-center w-full"
     id="blog"
   >
-    {/* <Blog posts={allPosts} /> */}
+    {/* <Blog posts={allPosts} /> 
   </section>
 
   <section
@@ -69,7 +103,7 @@ const allPosts = ""
     <div class="flex flex-row justify-center items-center h-full space-y-4">
       <Contact contact={info.contact} size="lg" />
     </div>
-  </section>
+  </section>  */}
 </BaseLayout>
 
 <style>
