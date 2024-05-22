@@ -65,7 +65,7 @@ export default function Nav({ posts }) {
                 </li>
               ))}
               <li className="px-4 flex">
-                <ToggleDarkMode disabled/>
+                <ToggleDarkMode />
               </li>
               <li className="px-4 flex">
                 <Search posts={posts} />

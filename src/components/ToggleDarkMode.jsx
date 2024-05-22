@@ -6,12 +6,12 @@ export default function DarkModeUtility() {
   useEffect(() => {
     const localTheme = window.localStorage.getItem("theme");
     if (localTheme) setTheme(localTheme);
-    else if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    )
-      setTheme("dark");
-    else setTheme("light");
+    // else if (
+    //   window.matchMedia &&
+    //   window.matchMedia("(prefers-color-scheme: dark)").matches
+    // )
+    //   setTheme("dark");
+    else setTheme("dark");
   }, []);
 
   useEffect(() => {
