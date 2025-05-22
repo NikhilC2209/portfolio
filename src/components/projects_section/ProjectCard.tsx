@@ -10,7 +10,7 @@ export default function ProjectCard(props: ProjectCardProps) {
   const { project } = props;
 
   return (
-    <div className="flex flex-col bg-primary dark:bg-dk-primary rounded-lg">
+    <div className="flex flex-col bg-primary dark:bg-dk-primary shadow-lg border-light">
       <div className="flex-shrink-0">
         <a
           href={project.link}
@@ -26,9 +26,9 @@ export default function ProjectCard(props: ProjectCardProps) {
           />
         </a>
       </div>
-      <div className="flex-1 bg-primary dark:bg-dk-primary p-6 flex flex-col justify-between">
+      <div className="flex-1 bg-primary dark:bg-dk-primary p-3 flex flex-col justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-text dark:text-dk-text">
+          <h1 className="text-lg font-medium">
             <a
               href={project.link}
               rel="noreferrer"
@@ -37,14 +37,14 @@ export default function ProjectCard(props: ProjectCardProps) {
             >
               {project.title}
             </a>
-          </p>
+          </h1>
           <a
             href={project.link}
             rel="noreferrer"
             className="block mt-2"
             aria-label="Description of the project, click to open the project page"
           >
-            <p className="text-xl font-semibold text-gray-900">
+            <p className="text-medium font-semibold ">
               {project.description}
             </p>
           </a>
@@ -61,9 +61,9 @@ export default function ProjectCard(props: ProjectCardProps) {
               </span>
             ))}
           </div>
-          <p className="ml-auto text-sm font-medium text-gray-900">
+          {/* <p className="ml-auto text-sm font-medium">
             {project.date}
-          </p>
+          </p> */}
         </div>
       </div>
     </div>

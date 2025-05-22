@@ -62,7 +62,7 @@ export default function ProjectCarousel(props: ProjectCarouselProps) {
     initialSlide: 0,
     nextArrow: <CustomArrow />,
     prevArrow: <CustomArrow left />,
-    adaptiveHeight: true,
+    adaptiveHeight: false,
     responsive: [
       {
         breakpoint: 1024,

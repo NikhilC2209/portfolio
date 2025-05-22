@@ -9,7 +9,7 @@ export default function Nav({ posts }) {
 
   const navLinks = [
     { name: "About", href: "/#about" },
-    { name: "Projects", href: "/#temp" },
+    { name: "Projects", href: "/#projects" },
     { name: "Blog", href: "/blog" },
     { name: "Thoughts", href: "/thoughts" },
   ];
