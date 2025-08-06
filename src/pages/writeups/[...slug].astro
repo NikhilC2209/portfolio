@@ -1,0 +1,53 @@
+---
+import { useStoryblokApi } from '@storyblok/astro'
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
+import Dismissible from "../../components/Dismissible.jsx";
+
+export async function getStaticPaths() {
+  const sbApi = useStoryblokApi();
+
+  console.log("Enter function")
+
+  const { data } = await sbApi.get("cdn/stories", {
+    content_type: "writeupPost",
+    // version: import.meta.env.DEV ? "draft" : "published",
+    version: "published",
+  });
+
+  const stories = Object.values(data.stories);
+
+  return stories.map((story) => {
+    return {
+      params: { slug: story.slug },
+    };
+  });
+}
+
+console.log("Load Page")
+
+const sbApi = useStoryblokApi();
+const { slug } = Astro.params;
+const { data } = await sbApi.get(`cdn/stories/writeups/${slug}`, {
+  // version: import.meta.env.DEV ? "draft" : "published",
+  version: "published",
+});
+
+const story = data.story;
+
+console.log("Before")
+console.log(story)
+console.log('After')
+console.log(story.tag_list)
+
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{story.name}</title>
+  </head>
+  <body>
+    <StoryblokComponent blok={story.content} tags={story.tag_list} date={story.content.date} link={story.content.medium_link.url}/>
+    <Dismissible client:visible />
+  </body>
+</html>

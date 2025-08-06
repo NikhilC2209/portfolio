@@ -11,7 +11,8 @@ export default function Nav({ posts }) {
     { name: "About", href: "/#about" },
     { name: "Projects", href: "/#projects" },
     { name: "Blog", href: "/blog" },
-    { name: "Thoughts", href: "/thoughts" },
+    { name: "Writeups", href: "/writeups" },
+    //{ name: "Thoughts", href: "/thoughts" },
   ];
 
   const extractInitials = (name) => {
