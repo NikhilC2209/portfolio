@@ -6,8 +6,6 @@ import Dismissible from "../../components/Dismissible.jsx";
 export async function getStaticPaths() {
   const sbApi = useStoryblokApi();
 
-  console.log("Enter function")
-
   const { data } = await sbApi.get("cdn/stories", {
     content_type: "blogPost",
     // version: import.meta.env.DEV ? "draft" : "published",
@@ -23,8 +21,6 @@ export async function getStaticPaths() {
   });
 }
 
-console.log("Load Page")
-
 const sbApi = useStoryblokApi();
 const { slug } = Astro.params;
 const { data } = await sbApi.get(`cdn/stories/blog/${slug}`, {
@@ -33,11 +29,6 @@ const { data } = await sbApi.get(`cdn/stories/blog/${slug}`, {
 });
 
 const story = data.story;
-
-console.log("Before")
-console.log(story)
-console.log('After')
-console.log(story.tag_list)
 
 ---
 
