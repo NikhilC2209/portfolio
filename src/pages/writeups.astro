@@ -11,7 +11,7 @@ const { blok} = Astro.props
  
 const storyblokApi = useStoryblokApi()
 const { data } = await storyblokApi.get(`cdn/stories/`, {
-  version: 'draft', // or 'published'
+  version: import.meta.env.DEV ? "draft" : "published",
   starts_with: "writeups/",
   content_type: "writeupPost",
   is_startpage: 0,

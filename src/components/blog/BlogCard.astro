@@ -4,15 +4,15 @@ const { article, tags, link } = Astro.props
 const football = ["Football", "Arsenal", "Barcelona", "Liverpool", "Man City"]
 const coding = ["Python", "R", "Javascript", "React", "Next JS", "Astro", "Go", "C", "C++", "Astro", "Bun", "OpenCV", "Yolov8", "Roboflow"]
 
-const codingTags = tags.filter((tag) => coding.includes(tag));
-const footballTags = tags.filter((tag) => football.includes(tag)); 
+const codingTags = (tags ?? []).filter((tag) => coding.includes(tag));
+const footballTags = (tags ?? []).filter((tag) => football.includes(tag)); 
 
 ---
  
 <article class="">
 <a href={`/${link}`}>
   <div class="my-4 justify-center transition ease-in-out duration-300 md:w-full group space-x-2 sm:space-x-6 flex flex-col md:flex-row hover:shadow-[-1px_-1px_20px_6px_rgba(15,255,80,_0.2)] backdrop-blur-md border-emerald-400 md:border-none border-y-2 shadow-2xl">
-    <img class="mx-auto w-full hover:sepia-[.40] transition ease-in-out duration-300 md:w-1/2 h-40 sm:h-80 object-fill" alt="art cover" loading="lazy" src={`${article.image.filename}`} />
+    <img class="mx-auto w-full hover:sepia-[.40] transition ease-in-out duration-300 md:w-1/2 h-40 sm:h-80 object-fill" alt="art cover" loading="lazy" src={article.image?.filename} />
     <div class="w-full sm:w-11/12">
         <h1 class="text-xl md:text-3xl my-4 mr-3">
             {article.title}

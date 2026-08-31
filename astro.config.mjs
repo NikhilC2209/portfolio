@@ -9,8 +9,6 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
 import sitemap from "@astrojs/sitemap";
 
-import vercel from "@astrojs/vercel/serverless";
-
 // https://astro.build/config
 export default defineConfig({
   vite: {
@@ -22,7 +20,7 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [rehypeAccessibleEmojis]
   },
-  site: 'https://astro-portfolio-template.pages.dev',
+  site: 'https://c0smos.dev',
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
@@ -42,7 +40,5 @@ export default defineConfig({
       // Choose your Storyblok space region
       region: 'us' // optional,  or 'eu' (default)
     }
-  }), tailwind(), react(), robotsTxt(), sitemap()],
-  output: "server",
-  adapter: vercel()
+  }), tailwind(), react(), robotsTxt(), sitemap()]
 });

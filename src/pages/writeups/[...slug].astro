@@ -8,8 +8,7 @@ export async function getStaticPaths() {
 
   const { data } = await sbApi.get("cdn/stories", {
     content_type: "writeupPost",
-    // version: import.meta.env.DEV ? "draft" : "published",
-    version: "draft",
+    version: import.meta.env.DEV ? "draft" : "published",
   });
 
   const stories = Object.values(data.stories);
@@ -24,8 +23,7 @@ export async function getStaticPaths() {
 const sbApi = useStoryblokApi();
 const { slug } = Astro.params;
 const { data } = await sbApi.get(`cdn/stories/writeups/${slug}`, {
-  // version: import.meta.env.DEV ? "draft" : "published",
-  version: "draft",
+  version: import.meta.env.DEV ? "draft" : "published",
 });
 
 const story = data.story;
@@ -43,7 +41,7 @@ const story = data.story;
     <title>{story.name}</title>
   </head>
   <body>
-    <StoryblokComponent blok={story.content} tags={story.tag_list} date={story.content.date} link={story.content.medium_link.url} challenges={story.content.challenges}/>
+    <StoryblokComponent blok={story.content} tags={story.tag_list} date={story.content.date} link={story.content.medium_link?.url} challenges={story.content.challenges}/>
     <Dismissible client:visible />
   </body>
 </html>

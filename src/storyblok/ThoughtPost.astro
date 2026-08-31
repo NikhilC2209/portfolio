@@ -21,7 +21,7 @@ import "../styles/blog.css";
 	<h1 class="w-full lg:w-10/12 lg:ml-4 my-12 text-4xl sm:text-5xl">{blok.title}</h1>
 	<img
       class="mx-auto w-full md:w-3/4"
-      src={`${blok.image.filename}`}
+      src={blok.image?.filename}
     />
     <div class="w-full lg:w-11/12 content lg:px-2">
         {/* <Fragment set:html={content} /> */}
