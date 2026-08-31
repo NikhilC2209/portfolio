@@ -29,12 +29,4 @@ const story = data.story;
 
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Storyblok & Astro</title>
-  </head>
-  <body>
-    <StoryblokComponent blok={story.content} tags={story.tag_list}/>
-  </body>
-</html>
+<StoryblokComponent blok={story.content} tags={story.tag_list}/>

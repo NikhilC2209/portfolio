@@ -9,6 +9,7 @@ import { YouTube } from 'astro-embed';
 import Text from "../components/Text.astro";
 
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Dismissible from "../components/Dismissible.jsx";
 
 
 const { blok, tags, link, date } = Astro.props
@@ -48,7 +49,7 @@ import "../styles/blog.css";
 
 ---
 
-<BaseLayout>
+<BaseLayout title={blok.title}>
 {/*  <script>
     import hljs from 'highlight.js';
     hljs.highlightAll();
@@ -129,4 +130,5 @@ import "../styles/blog.css";
     </div> 
 {/*    <Code code="console.log('Hello world!')" lang="js" theme="light-plus"/> */}
   </article>
+  <Dismissible client:visible />
 </BaseLayout>  
