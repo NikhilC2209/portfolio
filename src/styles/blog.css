@@ -1,5 +1,4 @@
 @import url(https://fonts.googleapis.com/css2?family=Open+Sans);
-@import url(https://fonts.googleapis.com/css2?family=Orbitron:wght@700);
 @import url(https://fonts.googleapis.com/css2?family=Poppins);
 @tailwind base;
 @tailwind components;
@@ -10,14 +9,14 @@
   margin-top: 1rem;
   margin-bottom: 1rem; 
   border-left-width: 4px; 
-  border-color: #D1D5DB; 
-  background-color: #102030;
+  border-color: rgb(var(--c-muted) / 0.35); 
+  background-color: rgb(var(--c-surface));
 }
 
 .content blockquote::before{
   font-family:Arial;
   content: "\201C";
-  color: #fff;
+  color: rgb(var(--c-text));
   font-size: 6em;
 }
 
@@ -37,24 +36,24 @@
   font-style: italic; 
   font-weight: 500; 
   line-height: 1.625; 
-  color: white;
+  color: rgb(var(--c-text));
 }*/
 
 /*article > ul {
   list-style-type: disc;
-  color: white;
+  color: rgb(var(--c-text));
   margin: 1em;
 }*/
 
 .content a {
-  color: #0FFF50;
+  color: rgb(var(--c-heading));
   text-decoration: underline;
 }
 
 .content ul > li {
   font-family: "Poppins", sans-serif;
   line-height: 1.5rem;
-  color: white;
+  color: rgb(var(--c-text));
   font-size: 1rem;
   list-style-type:none;
   background-image: url(/icons8-arrow-24.png);
@@ -71,10 +70,10 @@
 }
 
 .inline-code {
-  background-color: #4d4d4d;
+  background-color: rgb(var(--c-surface));
   font-size: 0.9rem;
   padding: 0.3rem;
-  color: #ff6666;
+  color: rgb(var(--c-code));
   border-radius: 0.35em;
   white-space: nowrap;
 }
@@ -83,17 +82,17 @@
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
   margin: 1.5rem 0;
-  color: white !important;
+  color: rgb(var(--c-text)) !important;
   line-height: 1.8rem;
 }
 
 .content h1 {
-  font-family: "Orbitron", sans-serif;
+  font-family: var(--font-heading);
   margin: 2.5rem 0 1.5rem 0;
 }
 
 .content h3, .content h4, .content h5, .content h6 {
-  font-family: "Orbitron", sans-serif;
+  font-family: var(--font-heading);
   margin: 1.5rem 0;
 }
 
@@ -111,7 +110,7 @@
 }
 
 .content b {
-  color: #0FFF50;
+  color: rgb(var(--c-heading));
 }
 
 .astro-code {
@@ -124,14 +123,14 @@
     font-family: "Poppins", sans-serif;
     font-size: 1.15rem;
     margin: 1.5rem 0;
-    color: white !important;
+    color: rgb(var(--c-text)) !important;
     line-height: 1.8rem;
   }
 
   .content ul > li {
     font-family: "Poppins", sans-serif;
     line-height: 1.7rem;
-    color: white;
+    color: rgb(var(--c-text));
     font-size: 1.15rem;
     list-style-type:none;
     background-image: url(/icons8-arrow-24.png);

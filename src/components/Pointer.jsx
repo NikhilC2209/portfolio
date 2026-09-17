@@ -1,17 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import { useThemeColor } from "../hooks/useThemeColor";
-import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "../../tailwind.config.mjs";
 
 export default function Pointer() {
   const canvasRef = useRef(null);
-  const twConfig = resolveConfig(tailwindConfig);
-  const themeColor = useThemeColor([
-    twConfig.theme.colors["dk-secondary"],
-    twConfig.theme.colors["secondary"],
-  ]);
+  const themeColor = useThemeColor("heading");
 
   useEffect(() => {
+    if (!themeColor) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let particles = [];

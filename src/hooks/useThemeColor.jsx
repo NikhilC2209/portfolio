@@ -1,27 +1,23 @@
 import { useState, useEffect } from "react";
 
-export function useThemeColor(colors) {
-  const [themeColor, setThemeColor] = useState(colors[1]); // Default to light mode color
+// Returns a theme colour role (see src/data/themes.js) as a canvas-friendly
+// `rgb(r, g, b)` string, and updates when the theme switcher fires `themechange`.
+export function useThemeColor(role = "heading") {
+  const [color, setColor] = useState(null);
 
   useEffect(() => {
-    const html = document.querySelector("html");
-
-    const handleThemeChange = () => {
-      if (html.classList.contains("dark")) {
-        setThemeColor(colors[0]); // Dark mode color
-      } else {
-        setThemeColor(colors[1]); // Light mode color
-      }
+    const read = () => {
+      const channels = getComputedStyle(document.documentElement)
+        .getPropertyValue(`--c-${role}`)
+        .trim()
+        .split(/\s+/);
+      if (channels.length === 3) setColor(`rgb(${channels.join(", ")})`);
     };
 
-    handleThemeChange();
+    read();
+    window.addEventListener("themechange", read);
+    return () => window.removeEventListener("themechange", read);
+  }, [role]);
 
-    window.addEventListener("themechange", handleThemeChange);
-
-    return () => {
-      window.removeEventListener("themechange", handleThemeChange);
-    };
-  }, []);
-
-  return themeColor;
+  return color;
 }

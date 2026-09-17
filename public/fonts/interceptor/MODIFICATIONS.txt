@@ -1,0 +1,14 @@
+InterceptorSlim.woff2 is a Modified Version of Interceptor by Neale Davidson
+(Pixel Sagas, https://www.pixelsagas.com), released under the SIL Open Font
+License 1.1 (see OFL.txt). It remains under that licence.
+
+Changes from Interceptor.otf (Regular):
+- every glyph outline eroded inwards by 45 font units (of 2048/em) to give a
+  lighter weight; advance widths and kerning are unchanged
+- TrueType hinting removed, as it no longer matched the outlines
+- renamed to "Interceptor Slim", per the original readme's request that
+  modified versions use a different name
+- converted to WOFF2
+
+Generated with scripts/slim-font.py in this repository:
+  python scripts/slim-font.py Interceptor.otf InterceptorSlim.woff2 --inset 45 --name "Interceptor Slim"

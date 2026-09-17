@@ -1,36 +1,47 @@
-@import url(https://fonts.googleapis.com/css2?family=Orbitron:wght@700);
-@import url(https://fonts.googleapis.com/css2?family=Poppins);
+@import url(https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600;700&family=Poppins&display=swap);
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Interceptor Slim: a lighter derivative of Interceptor by Neale Davidson (Pixel Sagas).
+   SIL Open Font License 1.1 — see /fonts/interceptor/OFL.txt and MODIFICATIONS.txt.
+   One file serves every weight, so bold-marked titles don't get synthetic bolding. */
+@font-face {
+  font-family: "Interceptor Slim";
+  src: url("/fonts/interceptor/InterceptorSlim.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 body {
   font-family: "Roboto", sans-serif;
   margin: 0;
   padding: 0;
+  background-color: rgb(var(--c-bg));
 }
 html {
   scroll-behavior: smooth;
 }
 
 * {
-  scrollbar-color: theme(colors.secondary) theme(colors.primary);
+  scrollbar-color: rgb(var(--c-heading)) rgb(var(--c-bg));
   scrollbar-width: thin;
 }
 
-html.dark {
-  scrollbar-color: theme(colors.dk-secondary) theme(colors.dk-primary);
+.font-display {
+  letter-spacing: var(--font-tracking);
 }
 
-
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Orbitron", sans-serif;
-  color: theme(colors.dk-secondary)
+  font-family: var(--font-heading);
+  letter-spacing: var(--font-tracking);
+  color: rgb(var(--c-heading));
 }
 
 p {
   font-family: "Poppins", sans-serif;
-  color: theme(colors.text);
+  color: rgb(var(--c-text));
 }
 
 html,
@@ -40,7 +51,7 @@ body {
 
 * {
   overflow-wrap: break-word !important;
-  word-wrap: break-word !important; 
+  word-wrap: break-word !important;
   transition: color 0.25s linear;
   -webkit-transition: color 0.25s linear;
   -moz-transition: color 0.25s linear;
@@ -48,23 +59,7 @@ body {
   -o-transition: color 0.25s linear;
 }
 
-/**::selection {
-  background-color: theme(colors.text) !important;
-  color: theme(colors.primary) !important;
-}*/
-
 *::selection {
-  background-color: theme(colors.bg-dark-main) !important;
-  color: theme(colors.neon-green-secondary) !important;
-}
-
-/*html.dark *::selection {
-  background-color: theme(colors.dk-text) !important;
-  color: theme(colors.dk-primary) !important;
-}
-*/
-
-html.dark *::selection {
-  background-color: theme(colors.bg-dark-main) !important;
-  color: theme(colors.neon-green-secondary) !important;
+  background-color: rgb(var(--c-bg)) !important;
+  color: rgb(var(--c-heading)) !important;
 }

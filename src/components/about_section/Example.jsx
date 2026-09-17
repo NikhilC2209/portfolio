@@ -8,8 +8,8 @@ export default function Example({text, size, speed}) {
       wrapper="span"
       speed={speed ? speed : 60}
       // style={{ fontSize: '1.7em', display: 'inline-block', 'color': '#0FFF50' }}
-      style={{ display: 'inline-block', 'color': '#0FFF50' }}
-      className={size}
+      style={{ display: 'inline-block', color: 'rgb(var(--c-heading))' }}
+      className={`font-display ${size ?? ''}`}
       repeat={Infinity}
     />
   );

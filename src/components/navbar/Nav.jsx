@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ToggleDarkMode from "../ToggleDarkMode";
+import ThemeSwitcher from "../ThemeSwitcher";
 import Search from "../search/Search";
 import Hamburger from "./Hamburger";
 import { info } from "../../data/info";
@@ -30,7 +30,7 @@ export default function Nav({ posts }) {
       <nav className="w-screen mx-auto top-0 z-50 sticky bg-primary dark:bg-dk-primary">
         <div className="w-full px-6 py-2 flex justify-between items-center">
           <a className="font-bold text-2xl lg:text-4xl" href="/#">
-            <h1 className="text-secondary text-2xl md:text-4xl m-0 dark:text-dk-secondary">
+            <h1 className="font-display text-secondary text-2xl md:text-4xl m-0 dark:text-dk-secondary">
               {/* {"</" + extractInitials(info.name) + ">"} */}
               {"<" + "Portfolio" + " />"}
             </h1>
@@ -66,7 +66,7 @@ export default function Nav({ posts }) {
                 </li>
               ))}
               <li className="px-4 flex">
-                <ToggleDarkMode />
+                <ThemeSwitcher />
               </li>
               <li className="px-4 flex">
                 <Search posts={posts} />
@@ -91,7 +91,7 @@ export default function Nav({ posts }) {
               </li>
             ))}
             <li className="p-4 flex flex-row items-center justify-evenly">
-              <ToggleDarkMode />
+              <ThemeSwitcher />
               <Search posts={posts} />
             </li>
           </ul>
