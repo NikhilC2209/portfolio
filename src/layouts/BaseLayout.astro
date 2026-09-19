@@ -2,13 +2,14 @@
 import Nav from "../components/navbar/Nav";
 import TopButton from "../components/TopButton";
 import Pointer from "../components/Pointer";
-import { themeCss, defaultTheme, themeIds, storageKey, themePreloads } from "../data/themes.js";
+import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, trailStorageKey, trailPaletteIds } from "../data/themes.js";
 
 const { title } = Astro.props;
 // const posts = await Astro.glob("../pages/posts/*.md");
 const posts = ""
 
 import "../styles/global.css";
+import "../styles/themes/cyberpunk.css";
 ---
 
 <!doctype html>
@@ -16,7 +17,7 @@ import "../styles/global.css";
   <head>
     <meta charset="UTF-8" />
     <style set:html={themeCss}></style>
-    <script is:inline define:vars={{ themeIds, defaultTheme, storageKey, themePreloads }}>
+    <script is:inline define:vars={{ themeIds, defaultTheme, storageKey, themePreloads, trailStorageKey, trailPaletteIds }}>
       // Applies the saved theme before first paint so the page never flashes
       // the default palette on the way to the chosen one.
       (function () {
@@ -28,6 +29,16 @@ import "../styles/global.css";
           /* storage blocked — fall back to the default */
         }
         document.documentElement.dataset.theme = theme;
+
+        // Restore the cursor-trail palette the visitor last clicked to.
+        try {
+          var trail = window.localStorage.getItem(trailStorageKey);
+          if (trail && (trailPaletteIds[theme] || []).indexOf(trail) !== -1) {
+            document.documentElement.dataset.trail = trail;
+          }
+        } catch (e) {
+          /* storage blocked — use the theme's first palette */
+        }
 
         // Start fetching this theme's self-hosted fonts now, rather than when the
         // stylesheet is parsed, to shorten the fallback-font flash.

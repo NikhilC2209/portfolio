@@ -50,7 +50,7 @@ export default function ThemeSwitcher() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded border-2 border-secondary dark:border-dk-secondary px-2 py-1 text-secondary dark:text-dk-secondary hover:text-accent dark:hover:text-dk-accent hover:border-accent dark:hover:border-dk-accent transition-colors"
+        className="hud-cut-border relative flex items-center gap-2 rounded border-2 border-secondary dark:border-dk-secondary px-2 py-1 text-secondary dark:text-dk-secondary hover:text-accent dark:hover:text-dk-accent hover:border-accent dark:hover:border-dk-accent transition-colors"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Change colour theme, currently ${active.label}`}
@@ -70,7 +70,7 @@ export default function ThemeSwitcher() {
       {open && (
         <ul
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded border-2 border-secondary dark:border-dk-secondary bg-primary dark:bg-dk-primary shadow-lg"
+          className="hud-cut-border absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded border-2 border-secondary dark:border-dk-secondary bg-primary dark:bg-dk-primary shadow-lg"
         >
           {themes.map((t) => {
             const isActive = t.id === theme;

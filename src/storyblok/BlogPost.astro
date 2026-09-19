@@ -56,9 +56,9 @@ import "../styles/blog.css";
   </script> */}
 
 
-<article class="w-full lg:w-3/4 mx-auto backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
+<article class="hud-cut w-full lg:w-3/4 mx-auto backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]">
 {/* <article {...storyblokEditable(blok)} class="backdrop-blur-md p-4 shadow-[rgba(0,_0,_0,_0.2)_0px_60px_40px_-7px]"> */}
-    <h1 class="font-display w-full lg:w-10/12 lg:ml-4 my-12 text-4xl sm:text-5xl">{blok.title}</h1>
+    <h1 class="font-display w-full lg:w-10/12 lg:ml-4 my-12 text-4xl sm:text-5xl" data-hud="/// BLOG.ENTRY">{blok.title}</h1>
     <div class="space-y-6 my-3 md:space-y-0 flex flex-col md:flex-row md:items-center md:justify-between w-11/12">
       <div class="flex items-center">
       <img width="48" height="48" src="https://img.icons8.com/emoji/48/calendar-emoji.png" alt="calendar-emoji"/>
@@ -66,17 +66,17 @@ import "../styles/blog.css";
       </div>
       <div>
       {
-          codingTags.map((tag) => <span class="bg-red-100 text-red-800 font-medium me-2 px-3 py-2 rounded dark:bg-red-900 dark:text-red-300">{tag}</span>)
+          codingTags.map((tag) => <span class="hud-tag bg-red-100 text-red-800 font-medium me-2 px-3 py-2 rounded dark:bg-red-900 dark:text-red-300">{tag}</span>)
 
       }
       {
-          footballTags.map((tag) => <span class="bg-blue-100 text-blue-800 font-medium me-2 px-3 py-2 rounded dark:bg-blue-900 dark:text-blue-300">{tag}</span>)
+          footballTags.map((tag) => <span class="hud-tag bg-blue-100 text-blue-800 font-medium me-2 px-3 py-2 rounded dark:bg-blue-900 dark:text-blue-300">{tag}</span>)
 
       }
       </div>
       <div>
         <a href={`${link}`} > 
-          <button type="button" class="bg-white focus:ring-4 hover:bg-gray-300 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-2 py-0.5 text-center inline-flex items-center me-1 mb-1">
+          <button type="button" class="hud-cut-sm bg-white focus:ring-4 hover:bg-gray-300 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-2 py-0.5 text-center inline-flex items-center me-1 mb-1">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 72 72">
               <path d="M45.049,14C57.06,14,58,14.94,58,26.951v18.098C58,57.06,57.06,58,45.049,58H26.951C14.94,58,14,57.06,14,45.049V26.951  C14,14.94,14.94,14,26.951,14H45.049z M29.713,44.151c4.502,0,8.151-3.649,8.151-8.151c0-4.502-3.649-8.151-8.151-8.151 c-4.502,0-8.151,3.649-8.151,8.151C21.562,40.502,25.212,44.151,29.713,44.151z M42.713,43.757c2.228,0,4.034-3.473,4.034-7.757 c0-4.284-1.806-7.757-4.034-7.757c-2.228,0-4.034,3.473-4.034,7.757C38.679,40.284,40.485,43.757,42.713,43.757z M48.98,42.928  c0.775,0,1.403-3.102,1.403-6.928s-0.628-6.928-1.403-6.928c-0.775,0-1.403,3.102-1.403,6.928S48.205,42.928,48.98,42.928z"></path>
             </svg>
@@ -86,7 +86,7 @@ import "../styles/blog.css";
       </div>
     </div>  
       <img
-      class="mx-auto my-8 w-full md:w-3/4"
+      class="hud-frame mx-auto my-8 w-full md:w-3/4"
       src={blok.image?.filename}
       />
       <div class="w-full lg:w-11/12 content lg:px-2">

@@ -27,14 +27,14 @@ const text=["v0.0.8", 1000]
 <BaseLayout title={title}>
 <section class="mx-6 my-12 w-11/12 lg:w-3/4 mx-auto" {...storyblokEditable(blok)}>
   <div class="flex flex-row justify-center items-center space-x-3">
-    <h2 class="font-display text-6xl font-bold text-center mb-12">
+    <h2 class="font-display text-6xl font-bold text-center mb-12" data-hud="/// BLOG.INDEX">
       Blog           
       <h2>
         <Example text={text} size="text-xl" speed={10} client:visible />
       </h2>
     </h2>
   </div>
-  <ul class="grid grid-cols-1 gap-6 md:grid-cols-1">
+  <ul class="hud-list grid grid-cols-1 gap-6 md:grid-cols-1">
     {
       articles?.length &&
         articles.map((article) => {

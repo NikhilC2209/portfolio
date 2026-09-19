@@ -1,0 +1,285 @@
+/* Effects that only apply to the Cyberpunk 2077 theme. Everything here is scoped to
+   [data-theme="cyberpunk"], so the other themes are untouched. Colours come from the
+   theme variables in src/data/themes.js: heading = yellow, accent = cyan, code = red.
+   The glitch pair (--glitch-a / --glitch-b) comes from the active trail palette. */
+
+/* ---------- Background: dot grid + neon haze + perspective floor ---------- */
+
+/* Outranks the tile image utility on <body> (attribute + element beats one class).
+   The dot grid echoes the one on cyberpunk.net: small, faint cyan points ~60px apart. */
+[data-theme="cyberpunk"] body {
+  background-color: rgb(var(--c-bg));
+  background-image:
+    radial-gradient(ellipse 70% 45% at 10% 0%, rgb(var(--c-accent) / 0.12), transparent 70%),
+    radial-gradient(ellipse 60% 45% at 100% 100%, rgb(var(--c-code) / 0.1), transparent 70%),
+    radial-gradient(circle, rgb(var(--c-accent) / 0.45) 1.2px, transparent 1.8px);
+  background-size: 100% 100%, 100% 100%, 60px 60px;
+  background-position: 0 0, 0 0, 30px 30px;
+  background-attachment: fixed;
+}
+
+/* A grid receding towards a horizon, fading out before it reaches the content. */
+[data-theme="cyberpunk"] body::before {
+  content: "";
+  position: fixed;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 42vh;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(var(--c-accent) / 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--c-accent) / 0.35) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(320px) rotateX(62deg);
+  transform-origin: bottom;
+  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 85%);
+  mask-image: linear-gradient(to top, black 0%, transparent 85%);
+}
+
+/* ---------- Neon glow ---------- */
+
+[data-theme="cyberpunk"] .font-display {
+  text-shadow: 0 0 18px rgb(var(--c-heading) / 0.35);
+}
+
+/* ---------- Glitch on hover ----------
+   Title text and any heading inside a link (logo, nav, cards). Section headings inside
+   articles are left alone so reading and selecting text stays calm. The burst runs
+   once (~0.4s, well under the three-flashes-a-second limit), then settles into a
+   steady two-colour split while hovered. Colours follow the active trail palette. */
+
+@keyframes cp-glitch {
+  0% {
+    text-shadow: 0 0 18px rgb(var(--c-heading) / 0.35);
+    transform: none;
+  }
+  20% {
+    text-shadow: -3px 0 rgb(var(--glitch-a) / 0.9), 3px 0 rgb(var(--glitch-b) / 0.9);
+    transform: translate(-2px, 1px) skewX(-6deg);
+  }
+  40% {
+    text-shadow: 3px -1px rgb(var(--glitch-a) / 0.9), -3px 1px rgb(var(--glitch-b) / 0.9);
+    transform: translate(2px, -1px);
+  }
+  60% {
+    text-shadow: -2px 1px rgb(var(--glitch-a) / 0.9), 2px -1px rgb(var(--glitch-b) / 0.9);
+    transform: translate(-1px, 0) skewX(4deg);
+  }
+  80% {
+    text-shadow: 1px 0 rgb(var(--glitch-a) / 0.9), -1px 0 rgb(var(--glitch-b) / 0.9);
+    transform: translate(1px, 0);
+  }
+  100% {
+    text-shadow: 1.5px 0 rgb(var(--glitch-a) / 0.75), -1.5px 0 rgb(var(--glitch-b) / 0.75),
+      0 0 22px rgb(var(--c-heading) / 0.5);
+    transform: none;
+  }
+}
+
+[data-theme="cyberpunk"] .font-display:hover,
+[data-theme="cyberpunk"] a:hover :is(h1, h2, h3, h4) {
+  animation: cp-glitch 0.4s steps(1, end) forwards;
+}
+
+/* `transform` is ignored on inline boxes; make the typing animation's span animatable. */
+[data-theme="cyberpunk"] span.font-display {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="cyberpunk"] .font-display:hover,
+  [data-theme="cyberpunk"] a:hover :is(h1, h2, h3, h4) {
+    animation: none;
+    text-shadow: 0 0 22px rgb(var(--c-heading) / 0.5);
+  }
+}
+
+/* ---------- Cut corners ----------
+   Top-left and bottom-right corners clipped at 45°, like the game's UI panels.
+   `--cut` sets the size; tags use a smaller cut than panels. */
+
+[data-theme="cyberpunk"] :is(.hud-cut, .hud-cut-sm, .hud-tag, .hud-card > div) {
+  --cut: 14px;
+  border-radius: 0;
+  clip-path: polygon(
+    var(--cut) 0, 100% 0,
+    100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%,
+    0 100%, 0 var(--cut)
+  );
+}
+
+[data-theme="cyberpunk"] :is(.hud-tag, .hud-cut-sm) {
+  --cut: 6px;
+}
+
+/* Clipping hides a card's box-shadow, so its hover glow moves to a drop-shadow on the
+   link around it, which follows the clipped outline. */
+[data-theme="cyberpunk"] .hud-card {
+  display: block;
+  transition: filter 0.3s ease-in-out;
+}
+
+/* Cards borrow the game's button styling: an outline that follows the cut corners
+   (the two diagonals are gradient strokes laid along the cuts), a small tick on the
+   left edge, and a yellow segment by the bottom-right cut. Hovering swaps the outline
+   to yellow and the accents to cyan. */
+[data-theme="cyberpunk"] .hud-card > div {
+  --cut: 18px;
+  --frame: rgb(var(--c-accent) / 0.7);
+  --frame-accent: rgb(var(--c-heading));
+  padding: 12px;
+  border: 2px solid var(--frame);
+  box-shadow: none;
+  background-color: rgb(var(--c-bg) / 0.55);
+  background-image:
+    linear-gradient(135deg, transparent 50%, var(--frame) 50%, var(--frame) calc(50% + 2px), transparent calc(50% + 2px)),
+    linear-gradient(135deg, transparent calc(50% - 2px), var(--frame) calc(50% - 2px), var(--frame) 50%, transparent 50%),
+    linear-gradient(var(--frame-accent), var(--frame-accent)),
+    linear-gradient(var(--frame-accent), var(--frame-accent));
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  background-size: var(--cut) var(--cut), var(--cut) var(--cut), 12px 2px, 56px 3px;
+  background-position: left top, right bottom, left 2px top 72%, right var(--cut) bottom 2px;
+  /* The markup's Tailwind `transition` would fade the straight edges while the
+     gradient diagonals switch instantly; switch everything at once instead. */
+  transition: none;
+}
+
+[data-theme="cyberpunk"] .hud-card:hover > div {
+  --frame: rgb(var(--c-heading));
+  --frame-accent: rgb(var(--c-accent));
+}
+
+[data-theme="cyberpunk"] .hud-card:hover {
+  filter: drop-shadow(0 0 14px rgb(var(--c-heading) / 0.35));
+}
+
+/* Bordered version (theme switcher): the element's background is the border colour and
+   a ::before in the page colour fills the inside, so the border follows the diagonal
+   too. Needs a positioned element; the button carries `relative` for this. */
+[data-theme="cyberpunk"] .hud-cut-border {
+  --cut: 8px;
+  border-color: transparent !important;
+  border-radius: 0;
+  background: rgb(var(--c-heading));
+  clip-path: polygon(
+    var(--cut) 0, 100% 0,
+    100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%,
+    0 100%, 0 var(--cut)
+  );
+}
+
+[data-theme="cyberpunk"] button.hud-cut-border:hover {
+  background: rgb(var(--c-accent));
+}
+
+[data-theme="cyberpunk"] .hud-cut-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--c-bg));
+  clip-path: polygon(
+    calc(var(--cut) - 1px) 0, 100% 0,
+    100% calc(100% - var(--cut) + 1px), calc(100% - var(--cut) + 1px) 100%,
+    0 100%, 0 calc(var(--cut) - 1px)
+  );
+}
+
+[data-theme="cyberpunk"] .hud-cut-border > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- HUD details ---------- */
+
+/* Small system labels, e.g. "/// WRITEUPS.INDEX", set with data-hud="…" on a title. */
+[data-theme="cyberpunk"] [data-hud]::before,
+[data-theme="cyberpunk"] .hud-list .hud-card h1::before,
+[data-theme="cyberpunk"] .content:has(h1) :is(h1, h2)::before,
+[data-theme="cyberpunk"] .content:not(:has(h1)) h2::before {
+  display: block;
+  margin-bottom: 0.5rem;
+  font: 600 13px/1.2 "Rajdhani", sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: rgb(var(--c-accent));
+}
+
+[data-theme="cyberpunk"] [data-hud]::before {
+  content: attr(data-hud);
+}
+
+/* Numbered cards in the blog and writeup listings: ENTRY_01, ENTRY_02, … */
+[data-theme="cyberpunk"] .hud-list {
+  counter-reset: hud-entry;
+}
+
+[data-theme="cyberpunk"] .hud-list > li {
+  counter-increment: hud-entry;
+}
+
+[data-theme="cyberpunk"] .hud-list .hud-card h1::before {
+  content: "ENTRY_" counter(hud-entry, decimal-leading-zero);
+}
+
+/* Numbered section headings inside posts. Posts don't use heading levels the same way:
+   most blog posts use h1 for sections and h2 for subsections, while some writeups
+   start at h2. So the top level present is numbered SECTION_01, SECTION_02, … and h2s
+   under an h1 become SECTION_01.1, SECTION_01.2, …; h3 and below stay unlabelled. */
+[data-theme="cyberpunk"] .content {
+  counter-reset: hud-section hud-subsection;
+}
+
+/* The subsection reset must sit on the h1 itself: a reset on ::before would only
+   cover the pseudo-element, not the h2s that follow. */
+[data-theme="cyberpunk"] .content:has(h1) h1 {
+  counter-reset: hud-subsection;
+}
+
+[data-theme="cyberpunk"] .content:has(h1) h1::before {
+  counter-increment: hud-section;
+  content: "// SECTION_" counter(hud-section, decimal-leading-zero);
+}
+
+[data-theme="cyberpunk"] .content:has(h1) h2::before {
+  counter-increment: hud-subsection;
+  content: "// SECTION_" counter(hud-section, decimal-leading-zero) "." counter(hud-subsection);
+}
+
+[data-theme="cyberpunk"] .content:not(:has(h1)) h2::before {
+  counter-increment: hud-section;
+  content: "// SECTION_" counter(hud-section, decimal-leading-zero);
+}
+
+/* Corner brackets around post images, drawn in the padding around the picture. Not on
+   card images: the card frame already outlines them. */
+[data-theme="cyberpunk"] :is(.hud-frame, .content img) {
+  --bracket: rgb(var(--c-accent));
+  padding: 6px;
+  background:
+    linear-gradient(var(--bracket), var(--bracket)) left top / 22px 2px,
+    linear-gradient(var(--bracket), var(--bracket)) left top / 2px 22px,
+    linear-gradient(var(--bracket), var(--bracket)) right top / 22px 2px,
+    linear-gradient(var(--bracket), var(--bracket)) right top / 2px 22px,
+    linear-gradient(var(--bracket), var(--bracket)) left bottom / 22px 2px,
+    linear-gradient(var(--bracket), var(--bracket)) left bottom / 2px 22px,
+    linear-gradient(var(--bracket), var(--bracket)) right bottom / 22px 2px,
+    linear-gradient(var(--bracket), var(--bracket)) right bottom / 2px 22px;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Decode effect (src/scripts/decode.js) ---------- */
+
+/* Each word stays on one line and each character keeps its final width, so the
+   scrambled glyphs can't make the heading reflow while it decodes. */
+.decode-word {
+  white-space: nowrap;
+}
+
+.decode-char {
+  display: inline-block;
+  text-align: center;
+}
