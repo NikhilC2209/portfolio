@@ -88,6 +88,7 @@
 
 .content h1 {
   font-family: var(--font-heading);
+  font-size: 1.875rem;
   margin: 2.5rem 0 1.5rem 0;
 }
 
@@ -103,6 +104,10 @@
 
 .content h3 {
   font-size: 1.2rem;
+}
+
+.content h4 {
+  font-size: 1.05rem;
 }
 
 .caption {

@@ -16,14 +16,18 @@
 //   tracking letter-spacing applied to display text and headings
 //   preload  font files worth fetching before first paint when this theme is active
 //   decode   true to play the decode effect on the home page heading (src/scripts/decode.js)
+//   starfield true to draw the animated starfield behind the page (src/components/StarField.jsx)
+//   sound    audio played when the visitor clicks to cycle the trail palette. Off until
+//            the visitor turns it on with the toggle in the nav (src/components/SoundToggle.jsx)
 //
 // Cursor trail (optional; defaults to round particles in the heading colour):
-//   shape    'circle' or 'square'
+//   shape    'circle', 'square', or 'blade' for a lightsaber stroke
 //   colors   colours picked at random for each particle: a role name ('heading') or a
 //            hex value. Repeat an entry to make it more common.
 //   palettes instead of `colors`, a list of { id, label, colors, glitch } that visitors
 //            cycle through by clicking the page. The first is the default. `glitch` is
-//            the colour pair for the hover-glitch split on titles.
+//            the colour pair for the theme's hover effect on titles (exposed as
+//            --glitch-a / --glitch-b): Cyberpunk's glitch split, Star Wars' saber glow.
 
 export const themes = [
   {
@@ -92,6 +96,62 @@ export const themes = [
     },
   },
   {
+    id: 'starwars',
+    label: 'Star Wars',
+    blurb: 'Opening crawl and lightsabers',
+    colors: {
+      bg: '#02030A',
+      heading: '#FFE81F',
+      accent: '#4BD5EE',
+      text: '#E8E6DA',
+      muted: '#9FC3D6',
+      surface: '#0D1424',
+      code: '#FF5A4E',
+    },
+    // Star Jedi mimics the logo lettering; News Cycle, an open-source revival of
+    // News Gothic (the opening crawl's typeface), shows while it loads and sets
+    // every other heading.
+    fonts: {
+      display: '"Star Jedi", "News Cycle", sans-serif',
+      heading: '"News Cycle", sans-serif',
+    },
+    tracking: '0.04em',
+    preload: ['/fonts/starjedi/Starjedi.ttf'],
+    starfield: true,
+    sound: '/sounds/saber-ignite.mp3',
+    // Lightsaber colours; clicking the page cycles between them. `glitch` here is the
+    // saber's glow and white core, used by the hover glow on titles and cards.
+    trail: {
+      shape: 'blade',
+      palettes: [
+        {
+          id: 'jedi',
+          label: 'Jedi Blue',
+          colors: ['#3FA9FF', '#3FA9FF', '#3FA9FF', '#4BD5EE', '#FFFFFF'],
+          glitch: ['#3FA9FF', '#F2FAFF'],
+        },
+        {
+          id: 'sith',
+          label: 'Sith Red',
+          colors: ['#FF2A2A', '#FF2A2A', '#FF2A2A', '#C80000', '#FFFFFF'],
+          glitch: ['#FF2A2A', '#FFF2F2'],
+        },
+        {
+          id: 'windu',
+          label: 'Mace Windu Purple',
+          colors: ['#B455FF', '#B455FF', '#B455FF', '#8A2BE2', '#FFFFFF'],
+          glitch: ['#B455FF', '#FAF2FF'],
+        },
+        {
+          id: 'yoda',
+          label: 'Yoda Green',
+          colors: ['#4CFF4C', '#4CFF4C', '#4CFF4C', '#1FBF3A', '#FFFFFF'],
+          glitch: ['#4CFF4C', '#F2FFF2'],
+        },
+      ],
+    },
+  },
+  {
     id: 'amber',
     label: 'Amber CRT',
     blurb: 'Warm phosphor terminal',
@@ -116,6 +176,13 @@ export const themeIds = themes.map((t) => t.id);
 export const storageKey = 'site-theme';
 export const themePreloads = Object.fromEntries(themes.map((t) => [t.id, t.preload ?? []]));
 export const trailStorageKey = 'site-trail';
+export const soundStorageKey = 'site-sound';
+
+// The theme's sound effect, or null when it has none.
+export function soundFor(themeId) {
+  return themes.find((t) => t.id === themeId)?.sound ?? null;
+}
+
 export const defaultTrail = { colors: ['heading'], shape: 'circle' };
 
 // The theme's trail as { shape, palettes }, even for themes with a single colour list.

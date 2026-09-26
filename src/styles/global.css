@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600;700&family=Poppins&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600;700&family=Poppins&family=News+Cycle:wght@400;700&display=swap);
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,8 +14,24 @@
   font-display: swap;
 }
 
+/* Star Jedi by Davide Canavero (Boba Fonts), freeware — see /fonts/starjedi/README.txt.
+   Its lowercase letters are the plain logo capitals, so the Star Wars theme sets
+   display text in lowercase. Many symbols are remapped to logo pieces (< and > are
+   underline strokes, @ is the STAR WARS logo, # $ % & ¶ are insignia…), so the range
+   covers only the characters it draws as themselves; the rest fall back to the
+   next font in the stack. */
+@font-face {
+  font-family: "Star Jedi";
+  src: url("/fonts/starjedi/Starjedi.ttf") format("truetype");
+  unicode-range: U+0020-0022, U+0027-0029, U+002C-003A, U+003F, U+0041-005A, U+0061-007A,
+    U+00BF-00FF, U+0152-0153, U+0160-0161, U+0178, U+017D-017E, U+2018-2019, U+201C-201D;
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
   background-color: rgb(var(--c-bg));

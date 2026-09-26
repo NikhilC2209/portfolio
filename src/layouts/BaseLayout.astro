@@ -2,6 +2,7 @@
 import Nav from "../components/navbar/Nav";
 import TopButton from "../components/TopButton";
 import Pointer from "../components/Pointer";
+import StarField from "../components/StarField";
 import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, trailStorageKey, trailPaletteIds } from "../data/themes.js";
 
 const { title } = Astro.props;
@@ -10,6 +11,7 @@ const posts = ""
 
 import "../styles/global.css";
 import "../styles/themes/cyberpunk.css";
+import "../styles/themes/starwars.css";
 ---
 
 <!doctype html>
@@ -46,7 +48,7 @@ import "../styles/themes/cyberpunk.css";
           var link = document.createElement("link");
           link.rel = "preload";
           link.as = "font";
-          link.type = "font/woff2";
+          link.type = /\.ttf$/.test(href) ? "font/ttf" : "font/woff2";
           link.crossOrigin = "anonymous";
           link.href = href;
           document.head.appendChild(link);
@@ -94,6 +96,7 @@ import "../styles/themes/cyberpunk.css";
     <title>{title}</title>
   </head>
   <body class="bg-primary w-full mx-auto bg-[url('/tile_background4.png')]">
+    <StarField client:only />
     <Nav client:visible posts={posts} />
     {/* <div class="container px-4 w-full lg:w-9/12 mx-auto"> */}
     <div class="container px-4 w-full mx-auto">

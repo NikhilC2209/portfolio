@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { trailFor, trailStorageKey } from "../data/themes.js";
+import { playIgnite } from "../scripts/saber-sound.js";
 
 // Clicks on these never cycle the palette — they already do something.
 const INTERACTIVE =
@@ -18,15 +19,58 @@ function readTrailStyle() {
   const { shape, palette } = activePalette();
   const styles = getComputedStyle(document.documentElement);
 
-  const colors = palette.colors
-    .map((color) => {
-      if (color.startsWith("#")) return color;
-      const channels = styles.getPropertyValue(`--c-${color}`).trim().split(/\s+/);
-      return channels.length === 3 ? `rgb(${channels.join(", ")})` : null;
-    })
-    .filter(Boolean);
+  const resolve = (color) => {
+    if (color.startsWith("#")) return color;
+    const channels = styles.getPropertyValue(`--c-${color}`).trim().split(/\s+/);
+    return channels.length === 3 ? `rgb(${channels.join(", ")})` : null;
+  };
 
-  return { shape, colors };
+  const colors = palette.colors.map(resolve).filter(Boolean);
+  // The blade's glow and white-hot core: the palette's `glitch` pair, which titles
+  // and cards already light up with, so every saber effect matches.
+  const [glow, core] = (palette.glitch ?? []).map(resolve);
+
+  return { shape, colors, glow: glow ?? colors[0], core: core ?? "#FFFFFF" };
+}
+
+// How long a point stays on the blade, in milliseconds.
+const BLADE_LIFE = 260;
+
+// Draws the trail as a lightsaber: a wide coloured glow with a white-hot core, both
+// tapering off as the segment ages.
+function drawBlade(ctx, points, now, style) {
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  for (let i = 1; i < points.length; i++) {
+    const from = points[i - 1];
+    const to = points[i];
+    const fade = Math.max(0, 1 - (now - to.t) / BLADE_LIFE);
+    if (fade <= 0) continue;
+
+    const segment = () => {
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+    };
+
+    ctx.shadowColor = style.glow;
+    ctx.strokeStyle = style.glow;
+    ctx.globalAlpha = 0.5 * fade;
+    ctx.lineWidth = 15 * fade;
+    ctx.shadowBlur = 20 * fade;
+    segment();
+
+    ctx.strokeStyle = style.core;
+    ctx.globalAlpha = 0.95 * fade;
+    ctx.lineWidth = 4 * fade;
+    ctx.shadowBlur = 10 * fade;
+    segment();
+  }
+
+  ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
 }
 
 export default function Pointer() {
@@ -36,6 +80,7 @@ export default function Pointer() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let particles = [];
+    let blade = [];
     let frame;
     let timer;
     let style = readTrailStyle();
@@ -66,6 +111,9 @@ export default function Pointer() {
 
       document.documentElement.dataset.trail = next.id;
       style = readTrailStyle();
+      // Themes with a sound effect ignite on the colour change, if the visitor
+      // has switched sound on.
+      playIgnite();
       try {
         window.localStorage.setItem(trailStorageKey, next.id);
       } catch {
@@ -89,6 +137,7 @@ export default function Pointer() {
       mouse.last_y = mouse.y;
       mouse.x = e.x;
       mouse.y = e.y;
+      if (style.shape === "blade") blade.push({ x: e.x, y: e.y, t: performance.now() });
     };
 
     const onMouseOut = () => {
@@ -101,6 +150,13 @@ export default function Pointer() {
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (style.shape === "blade") {
+        const now = performance.now();
+        blade = blade.filter((point) => now - point.t < BLADE_LIFE);
+        if (blade.length > 1) drawBlade(ctx, blade, now, style);
+        frame = requestAnimationFrame(animate);
+        return;
+      }
       particles.forEach((particle, index) => {
         if (particle.isDead()) {
           particles.splice(index, 1);
@@ -127,6 +183,11 @@ export default function Pointer() {
     const random = (min, max) => Math.random() * (max - min) + min;
 
     function createParticle() {
+      // The blade is drawn from the pointer's path instead of particles.
+      if (style.shape === "blade") {
+        timer = setTimeout(createParticle, particlesConfig.interval);
+        return;
+      }
       const radius = random(...particlesConfig.radius_in);
       const x = mouse.x;
       const y = mouse.y;
@@ -174,6 +235,7 @@ export default function Pointer() {
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseout", onMouseOut);
       particles = [];
+      blade = [];
     };
   }, []);
 

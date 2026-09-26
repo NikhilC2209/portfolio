@@ -1,0 +1,206 @@
+/* Effects that only apply to the Star Wars theme. Everything here is scoped to
+   [data-theme="starwars"], so the other themes are untouched. Colours come from the
+   theme variables in src/data/themes.js: heading = crawl yellow, accent = intro blue.
+   --glitch-a / --glitch-b are the active lightsaber's glow and core colours, so the
+   hover glow follows whichever saber the visitor has clicked to. */
+
+/* ---------- Background ---------- */
+
+/* The stars are drawn by src/components/StarField.jsx on a canvas behind the page.
+   This is the sky behind them: two faint nebula glows, which is also all a visitor
+   sees without JavaScript. Outranks the tile image utility on <body> (attribute +
+   element beats one class). */
+[data-theme="starwars"] body {
+  background-color: rgb(var(--c-bg));
+  background-image:
+    radial-gradient(ellipse 55% 40% at 90% 5%, rgb(var(--c-accent) / 0.07), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 0% 100%, rgb(var(--c-heading) / 0.04), transparent 70%);
+  background-attachment: fixed;
+}
+
+/* ---------- Titles ---------- */
+
+/* Star Jedi's lowercase letters are the clean logo capitals; its uppercase ones are
+   swash variants meant for hand-built logos. */
+[data-theme="starwars"] .font-display {
+  text-transform: lowercase;
+  text-shadow: 0 0 18px rgb(var(--c-heading) / 0.25);
+}
+
+/* Lightsaber glow on hover: the text burns white-hot at the core with a halo in the
+   active saber's colour. Section headings inside articles are left alone. */
+[data-theme="starwars"] :is(.font-display, a :is(h1, h2, h3, h4)) {
+  transition: color 0.25s ease-out, text-shadow 0.25s ease-out;
+}
+
+[data-theme="starwars"] :is(.font-display:hover, a:hover :is(h1, h2, h3, h4)) {
+  color: rgb(var(--glitch-b));
+  text-shadow:
+    0 0 2px rgb(var(--glitch-b)),
+    0 0 8px rgb(var(--glitch-a)),
+    0 0 18px rgb(var(--glitch-a)),
+    0 0 36px rgb(var(--glitch-a) / 0.6);
+}
+
+/* Nav links, card titles and the landing page's headings join the display text in
+   Star Jedi. It has a single weight and is already heavy, so no bolding. */
+[data-theme="starwars"] :is(nav li, .hud-card, #home, #about, #projects) :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-display);
+  text-transform: lowercase;
+}
+
+/* Star Jedi runs wide: keep the logo on one line, and step the nav links down a size
+   on smaller desktops so everything still fits in the bar. */
+[data-theme="starwars"] nav h1.font-display {
+  white-space: nowrap;
+}
+
+@media (max-width: 1279px) {
+  [data-theme="starwars"] nav li h1 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Headings inside posts stay in News Cycle for reading. Its regular weight is too
+   light and bold is its heaviest, so a stroke in the text colour thickens it
+   further; it's sized in em so it scales with the heading. */
+[data-theme="starwars"] :is(.content :is(h1, h2, h3, h4, h5, h6), .writeup-sidebar > h2) {
+  font-weight: 700;
+  -webkit-text-stroke: 0.02em currentColor;
+}
+
+/* ---------- Home: the opening crawl ---------- */
+
+[data-theme="starwars"] #home h1::before {
+  content: "A long time ago in a galaxy far, far away....";
+  display: block;
+  margin-bottom: 1rem;
+  font: 400 clamp(1rem, 1.6vw, 1.35rem)/1.4 "News Cycle", sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  text-shadow: none;
+  color: rgb(var(--c-accent));
+}
+
+/* The heading tilts up out of the distance, like the crawl in reverse. Plays on load
+   and again when the visitor switches into this theme. */
+@keyframes sw-crawl-in {
+  from {
+    opacity: 0;
+    transform: perspective(500px) rotateX(28deg) translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-theme="starwars"] #home h1 {
+  animation: sw-crawl-in 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transform-origin: bottom;
+}
+
+/* ---------- Cards ---------- */
+
+/* A quiet panel whose top edge ignites like a blade on hover, in the active saber
+   colour. */
+[data-theme="starwars"] .hud-card {
+  display: block;
+}
+
+[data-theme="starwars"] .hud-card > div {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgb(var(--c-accent) / 0.2);
+  border-radius: 6px;
+  background-color: rgb(var(--c-surface) / 0.6);
+  box-shadow: none;
+  transition: border-color 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+[data-theme="starwars"] .hud-card > div::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgb(var(--glitch-b));
+  box-shadow: 0 0 6px 1px rgb(var(--glitch-a)), 0 0 16px 2px rgb(var(--glitch-a) / 0.6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+
+[data-theme="starwars"] .hud-card:hover > div {
+  border-color: rgb(var(--glitch-a) / 0.6);
+  box-shadow: 0 0 28px rgb(var(--glitch-a) / 0.18);
+}
+
+[data-theme="starwars"] .hud-card:hover > div::after {
+  transform: scaleX(1);
+}
+
+/* Numbered cards in the blog, writeup and thoughts listings: EPISODE I, EPISODE II, … */
+[data-theme="starwars"] .hud-list {
+  counter-reset: sw-episode;
+}
+
+[data-theme="starwars"] .hud-list > li {
+  counter-increment: sw-episode;
+}
+
+[data-theme="starwars"] .hud-list .hud-card :is(h1, h2)::before {
+  content: "EPISODE " counter(sw-episode, upper-roman);
+  display: block;
+  margin-bottom: 0.5rem;
+  font: 700 13px/1.2 "News Cycle", sans-serif;
+  letter-spacing: 0.25em;
+  text-transform: none;
+  text-shadow: none;
+  color: rgb(var(--c-accent));
+}
+
+/* ---------- Posts ---------- */
+
+/* Code blocks as a datapad readout: Shiki sets the dark background inline, so the
+   panel colour has to outrank it. */
+[data-theme="starwars"] .content .astro-code {
+  position: relative;
+  padding-top: 3rem;
+  border: 1px solid rgb(var(--c-accent) / 0.3);
+  border-radius: 6px;
+  background-color: rgb(var(--c-surface) / 0.85) !important;
+  box-shadow: 0 0 26px rgb(var(--c-accent) / 0.07);
+}
+
+[data-theme="starwars"] .content .astro-code::before {
+  content: "DATAPAD";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.45rem 1rem;
+  font: 700 12px/1.2 "News Cycle", sans-serif;
+  letter-spacing: 0.22em;
+  color: rgb(var(--c-accent));
+  background: rgb(var(--c-accent) / 0.08);
+  border-bottom: 1px solid rgb(var(--c-accent) / 0.25);
+  border-radius: 5px 5px 0 0;
+}
+
+/* Images sit in a faint hologram-blue frame. */
+[data-theme="starwars"] :is(.hud-frame, .content img) {
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgb(var(--c-accent) / 0.3), 0 0 30px rgb(var(--c-accent) / 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="starwars"] #home h1 {
+    animation: none;
+  }
+
+  [data-theme="starwars"] .hud-card > div::after {
+    transition: none;
+  }
+}

@@ -147,6 +147,14 @@
   transition: none;
 }
 
+/* Thoughts cards have a fixed height; the frame's padding and the wider display font
+   can overflow it, so let them grow when a long title needs the room. */
+[data-theme="cyberpunk"] .hud-card > .thought-card {
+  height: auto;
+  min-height: 30rem;
+  padding-bottom: 20px;
+}
+
 [data-theme="cyberpunk"] .hud-card:hover > div {
   --frame: rgb(var(--c-heading));
   --frame-accent: rgb(var(--c-accent));
@@ -196,7 +204,7 @@
 
 /* Small system labels, e.g. "/// WRITEUPS.INDEX", set with data-hud="…" on a title. */
 [data-theme="cyberpunk"] [data-hud]::before,
-[data-theme="cyberpunk"] .hud-list .hud-card h1::before,
+[data-theme="cyberpunk"] .hud-list .hud-card :is(h1, h2)::before,
 [data-theme="cyberpunk"] .content:has(h1) :is(h1, h2)::before,
 [data-theme="cyberpunk"] .content:not(:has(h1)) h2::before {
   display: block;
@@ -221,7 +229,7 @@
   counter-increment: hud-entry;
 }
 
-[data-theme="cyberpunk"] .hud-list .hud-card h1::before {
+[data-theme="cyberpunk"] .hud-list .hud-card :is(h1, h2)::before {
   content: "ENTRY_" counter(hud-entry, decimal-leading-zero);
 }
 

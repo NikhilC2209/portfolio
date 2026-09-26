@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ThemeSwitcher from "../ThemeSwitcher";
+import SoundToggle from "../SoundToggle";
 import Search from "../search/Search";
 import Hamburger from "./Hamburger";
 import { info } from "../../data/info";
@@ -68,6 +69,9 @@ export default function Nav({ posts }) {
               <li className="px-4 flex">
                 <ThemeSwitcher />
               </li>
+              <li className="pr-4 flex">
+                <SoundToggle />
+              </li>
               <li className="px-4 flex">
                 <Search posts={posts} />
               </li>
@@ -92,6 +96,7 @@ export default function Nav({ posts }) {
             ))}
             <li className="p-4 flex flex-row items-center justify-evenly">
               <ThemeSwitcher />
+              <SoundToggle />
               <Search posts={posts} />
             </li>
           </ul>

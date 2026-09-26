@@ -39,12 +39,11 @@ const text=["A safe space for all those 3 A.M. thoughts", 1000]
       </h2>
     </div>  
   </div>
-  <ul class="grid grid-cols-1 md:gap-10 md:grid-cols-3 lg:w-5/6 mx-auto">
+  <ul class="hud-list grid grid-cols-1 md:gap-10 md:grid-cols-3 lg:w-5/6 mx-auto">
     {
       articles?.length &&
         articles.map((article) => {
           article.content.slug = article.slug
-          console.log(article.full_slug)
           return (
             <li>
               <ThoughtCard article={article.content} tags={article.tag_list} link={article.full_slug}/>

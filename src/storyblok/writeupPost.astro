@@ -50,11 +50,11 @@ import "../styles/blog.css";
       </div>
       <div>
       {
-          codingTags.map((tag) => <span class="hud-tag bg-red-100 text-red-800 font-medium me-2 px-3 py-2 rounded dark:bg-red-900 dark:text-red-300">{tag}</span>)
+          codingTags.map((tag) => <span class="hud-tag bg-code/15 text-code font-medium me-2 px-3 py-2 rounded">{tag}</span>)
 
       }
       {
-          footballTags.map((tag) => <span class="hud-tag bg-blue-100 text-blue-800 font-medium me-2 px-3 py-2 rounded dark:bg-blue-900 dark:text-blue-300">{tag}</span>)
+          footballTags.map((tag) => <span class="hud-tag bg-dk-accent/15 text-dk-accent font-medium me-2 px-3 py-2 rounded">{tag}</span>)
 
       }
       </div>
@@ -105,7 +105,7 @@ import "../styles/blog.css";
       </div>   
     </div> 
   </article>
-      <div class="flex-shrink-0 hidden lg:block" style="width:25%; position:fixed; right:0; top:30%; height:100vh; overflow-y:auto;">
+      <div class="writeup-sidebar flex-shrink-0 hidden lg:block" style="width:25%; position:fixed; right:0; top:30%; height:100vh; overflow-y:auto;">
         <h2 class="text-2xl sm:text-2xl">Challenge Links</h2>
         <ul class="my-4">
           {
