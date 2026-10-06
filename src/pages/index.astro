@@ -8,6 +8,9 @@ import Example from "../components/about_section/Example.jsx";
 
 import { Image } from "astro:assets";
 
+// The Pokémon theme's battle screen calls you by first name, in capitals, as the games do.
+const trainer = info.name.split(" ")[0].toUpperCase();
+
 
 // const ExampleComponent = () => {
 //   return (
@@ -48,22 +51,33 @@ const about=[
     <div
       class="flex flex-col lg:flex-row justify-center items-center h-full space-y-4"
     >
-      <div class="profile-pic">
-        <Image
-          src={info.picture}
-          alt={info.picture_alt}
-          width={200}
-          height={200}
-          class="lg:h-[32rem] lg:w-[36rem] h-40 w-40 rounded-full -rotate-6 space-x-8"
-        />
+      <div class="battle-sprite">
+        {/* The Pokémon theme's HP box; hidden in every other theme. */}
+        <div class="pkmn-only pkmn-status" aria-hidden="true">
+          <span class="pkmn-status-name">{trainer}</span>
+          <span class="pkmn-status-level">Lv25</span>
+          <span class="pkmn-status-hp"><span>HP</span><span class="pkmn-hp-bar"></span></span>
+        </div>
+        <div class="profile-pic">
+          <Image
+            src={info.picture}
+            alt={info.picture_alt}
+            width={200}
+            height={200}
+            class="lg:h-[32rem] lg:w-[36rem] h-40 w-40 rounded-full -rotate-6 space-x-8"
+          />
+        </div>
       </div>
 
       <div class="flex flex-col lg:mx-8 leading-relaxed space-y-4">
-        <h1 class="font-display text-3xl lg:text-5xl font-bold" data-hud="/// PROFILE.ID" data-decode>
-          Hi, I'm <span class="bg-clip-text">
-            {info.name}</span
-          >
-        </h1>
+        <div class="pkmn-dialog" data-dialog>
+          <p class="pkmn-only pkmn-encounter" aria-hidden="true">A wild {trainer} appeared!</p>
+          <h1 class="font-display text-3xl lg:text-5xl font-bold" data-hud="/// PROFILE.ID" data-decode>
+            Hi, I'm <span class="bg-clip-text">
+              {info.name}</span
+            >
+          </h1>
+        </div>
         <div class="flex flex-col lg:flex-row items-center space-x-3">
           <h2 class="text-text text-3xl">I'm a </h2> 
           <h2>
@@ -98,6 +112,7 @@ const about=[
 
 <script>
   import { decode } from "../scripts/decode.js";
+  import { autoScrollDialogs } from "../scripts/text-scroll.js";
   import { themes } from "../data/themes.js";
 
   // Plays on load, and again when the visitor switches into a theme that uses it.
@@ -109,6 +124,7 @@ const about=[
 
   run();
   window.addEventListener("themechange", run);
+  autoScrollDialogs();
 </script>
 
 <style>

@@ -16,18 +16,25 @@
 //   tracking letter-spacing applied to display text and headings
 //   preload  font files worth fetching before first paint when this theme is active
 //   decode   true to play the decode effect on the home page heading (src/scripts/decode.js)
+//   textScroll true to print [data-dialog] boxes letter by letter, like in-game text
+//            (src/scripts/text-scroll.js)
+//   battleIntro true to play a battle-start transition on the first page of a visit and
+//            whenever the visitor switches into the theme (src/scripts/battle-intro.js)
 //   starfield true to draw the animated starfield behind the page (src/components/StarField.jsx)
 //   sound    audio played when the visitor clicks to cycle the trail palette. Off until
 //            the visitor turns it on with the toggle in the nav (src/components/SoundToggle.jsx)
 //
 // Cursor trail (optional; defaults to round particles in the heading colour):
-//   shape    'circle', 'square', or 'blade' for a lightsaber stroke
+//   shape    'circle', 'square', 'blade' for a lightsaber stroke, or 'pokeball' for
+//            tumbling pixel Poké Balls with sparkles in `colors`
 //   colors   colours picked at random for each particle: a role name ('heading') or a
 //            hex value. Repeat an entry to make it more common.
 //   palettes instead of `colors`, a list of { id, label, colors, glitch } that visitors
 //            cycle through by clicking the page. The first is the default. `glitch` is
 //            the colour pair for the theme's hover effect on titles (exposed as
-//            --glitch-a / --glitch-b): Cyberpunk's glitch split, Star Wars' saber glow.
+//            --glitch-a / --glitch-b): Cyberpunk's glitch split, Star Wars' saber glow,
+//            Pokémon's drop shadow and text colour. Pokéball palettes also name their
+//            `ball` sprite (src/scripts/pokeball-sprites.js).
 
 export const themes = [
   {
@@ -152,21 +159,62 @@ export const themes = [
     },
   },
   {
-    id: 'amber',
-    label: 'Amber CRT',
-    blurb: 'Warm phosphor terminal',
+    id: 'pokemon',
+    label: 'Pokémon',
+    blurb: 'Retro handheld adventure',
     colors: {
-      bg: '#0B0A08',
-      heading: '#FFB000',
-      accent: '#FF7A18',
-      text: '#F2E5CE',
-      muted: '#C9B48A',
-      surface: '#1A150D',
-      code: '#FF5F5F',
+      bg: '#0E1321',
+      heading: '#FF6150',
+      accent: '#FFD23F',
+      text: '#F8F8F0',
+      muted: '#AFC6E9',
+      surface: '#18203A',
+      code: '#6CC45A',
     },
+    // Press Start 2P is a monospaced 8×8 pixel face in the spirit of the handheld
+    // games; it's wide, so it only sets the big display text. Pixelify Sans is the
+    // readable pixel face for every other heading.
     fonts: {
-      display: '"Orbitron", sans-serif',
-      heading: '"Orbitron", sans-serif',
+      display: '"Press Start 2P", monospace',
+      heading: '"Pixelify Sans", sans-serif',
+    },
+    textScroll: true,
+    battleIntro: true,
+    sound: '/sounds/menu-select.mp3',
+    // Clicking the page cycles through the Poké Balls. `glitch` is the hover effect on
+    // titles: a hard drop shadow in the ball's colour under text in the second colour.
+    trail: {
+      shape: 'pokeball',
+      palettes: [
+        {
+          id: 'poke',
+          label: 'Poké Ball',
+          ball: 'poke',
+          colors: ['#FFFFFF', '#FFFFFF', '#FF6150'],
+          glitch: ['#E3350D', '#FFFFFF'],
+        },
+        {
+          id: 'great',
+          label: 'Great Ball',
+          ball: 'great',
+          colors: ['#FFFFFF', '#6FA3F7', '#FF6150'],
+          glitch: ['#3A78D8', '#FFFFFF'],
+        },
+        {
+          id: 'ultra',
+          label: 'Ultra Ball',
+          ball: 'ultra',
+          colors: ['#FFFFFF', '#FFD23F', '#FFD23F'],
+          glitch: ['#5A5A66', '#FFD23F'],
+        },
+        {
+          id: 'master',
+          label: 'Master Ball',
+          ball: 'master',
+          colors: ['#FFFFFF', '#C98BFF', '#FF8AD8'],
+          glitch: ['#8A3FC8', '#FFD6F4'],
+        },
+      ],
     },
   },
 ];
@@ -177,6 +225,11 @@ export const storageKey = 'site-theme';
 export const themePreloads = Object.fromEntries(themes.map((t) => [t.id, t.preload ?? []]));
 export const trailStorageKey = 'site-trail';
 export const soundStorageKey = 'site-sound';
+// Themes that print dialog text letter by letter, so it can be hidden before first paint.
+export const textScrollThemes = themes.filter((t) => t.textScroll).map((t) => t.id);
+// Themes with a battle intro, and the session flag that stops it replaying on every page.
+export const battleIntroThemes = themes.filter((t) => t.battleIntro).map((t) => t.id);
+export const battleIntroSessionKey = 'battle-intro-played';
 
 // The theme's sound effect, or null when it has none.
 export function soundFor(themeId) {

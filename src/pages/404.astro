@@ -4,10 +4,59 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 // Plain <img> rather than astro:assets: the optimizer needs Sharp, which doesn't load
 // on this Node version. The vaderT-*.webp files in /public are generated from
 // public_local/vader-sources/vader_transparent.png (git-ignored, not deployed).
+
+// The Pokémon theme's 404 is a wild MissingNo.: a backwards-L block of scrambled 4×4
+// tiles, the shape of the glitch Pokémon's sprite. Seeded, so every build draws the
+// same sprite. Each colour becomes one SVG path of horizontal pixel runs.
+const TILE = 4;
+const COLS = 6;
+const ROWS = 9;
+const SHADES = ["#F8F8F8", "#A8A8B8", "#585868", "#181820"];
+
+let seed = 151;
+const rand = () => {
+  seed = (seed * 1664525 + 1013904223) % 4294967296;
+  return seed / 4294967296;
+};
+const shadeAt = (x, y, mode, a, b) => {
+  if (mode === 0) return rand() < 0.5 ? a : b; // noise
+  if (mode === 1) return y % 2 ? a : b; // scanlines
+  if (mode === 2) return (x + y) % 2 ? a : b; // checker
+  return x < TILE / 2 ? a : b; // split
+};
+
+const pixels = [];
+for (let row = 0; row < ROWS; row++) {
+  for (let col = 0; col < COLS; col++) {
+    if (col < 3 && row < 4) continue;
+    const mode = Math.floor(rand() * 4);
+    const a = Math.floor(rand() * SHADES.length);
+    const b = Math.floor(rand() * SHADES.length);
+    for (let y = 0; y < TILE; y++) {
+      for (let x = 0; x < TILE; x++) {
+        pixels.push({ x: col * TILE + x, y: row * TILE + y, shade: shadeAt(x, y, mode, a, b) });
+      }
+    }
+  }
+}
+
+const missingno = SHADES.map((color, shade) => {
+  const runs = [];
+  for (let y = 0; y < ROWS * TILE; y++) {
+    const row = pixels.filter((p) => p.y === y && p.shade === shade).map((p) => p.x).sort((i, j) => i - j);
+    for (let i = 0; i < row.length; ) {
+      let end = i;
+      while (row[end + 1] === row[end] + 1) end++;
+      runs.push(`M${row[i]} ${y}h${end - i + 1}v1h-${end - i + 1}z`);
+      i = end + 1;
+    }
+  }
+  return { color, d: runs.join("") };
+});
 ---
 
 <BaseLayout title="404 — Page not found">
-  <section class="flex flex-col items-center justify-center gap-6 px-4 py-12">
+  <section class="not-pkmn flex flex-col items-center justify-center gap-6 px-4 py-12">
     <h1 class="font-display text-6xl lg:text-8xl font-bold text-center">404</h1>
 
     <h2 class="font-display font-bold text-2xl lg:text-4xl text-center max-w-3xl">
@@ -31,7 +80,42 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       href="/">Move along, back home</a
     >
   </section>
+
+  {/* Shown instead of the section above in the Pokémon theme. */}
+  <section class="pkmn-only pkmn-404">
+    <div class="missingno-stage" aria-hidden="true">
+      <svg
+        class="missingno"
+        viewBox={`0 0 ${COLS * TILE} ${ROWS * TILE}`}
+        width={COLS * TILE * 8}
+        height={ROWS * TILE * 8}
+        shape-rendering="crispEdges"
+      >
+        {missingno.map(({ color, d }) => <path fill={color} d={d} />)}
+      </svg>
+    </div>
+
+    <div class="pkmn-404-ui">
+      <div class="pkmn-dialog" data-dialog>
+        <p class="pkmn-encounter">A wild MISSINGNO. appeared!</p>
+        <h1 class="font-display">404: This page doesn't exist.</h1>
+      </div>
+
+      <div class="pkmn-menu">
+        <span aria-hidden="true">FIGHT</span>
+        <span aria-hidden="true">BAG</span>
+        <span aria-hidden="true">POKéMON</span>
+        <a href="/" aria-label="Run away, back to the home page">RUN</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<script>
+  import { autoScrollDialogs } from "../scripts/text-scroll.js";
+
+  autoScrollDialogs();
+</script>
 
 <style>
   /* The cut-out is almost entirely black, and so is the starfield behind it, so a

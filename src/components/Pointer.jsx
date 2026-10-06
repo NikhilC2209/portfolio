@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { trailFor, trailStorageKey } from "../data/themes.js";
 import { playIgnite } from "../scripts/saber-sound.js";
+import { pokeballSprite, SPRITE_SIZE } from "../scripts/pokeball-sprites.js";
 
 // Clicks on these never cycle the palette — they already do something.
 const INTERACTIVE =
@@ -30,7 +31,7 @@ function readTrailStyle() {
   // and cards already light up with, so every saber effect matches.
   const [glow, core] = (palette.glitch ?? []).map(resolve);
 
-  return { shape, colors, glow: glow ?? colors[0], core: core ?? "#FFFFFF" };
+  return { shape, colors, glow: glow ?? colors[0], core: core ?? "#FFFFFF", ball: palette.ball };
 }
 
 // How long a point stays on the blade, in milliseconds.
@@ -73,6 +74,63 @@ function drawBlade(ctx, points, now, style) {
   ctx.shadowBlur = 0;
 }
 
+// Poké Ball trail tuning. Distances are CSS pixels, times milliseconds.
+const BALL = {
+  scale: 2, // screen pixels per sprite pixel
+  every: 48, // pointer travel between balls
+  life: 800,
+  fadeFrom: 0.55, // fraction of its life after which a ball starts to fade
+  gravity: 0.0016, // px/ms²
+  max: 40,
+};
+const SPARK_LIFE = 420;
+
+const random = (min, max) => Math.random() * (max - min) + min;
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+// A ball popped off the pointer: it hops up, drifts the way the pointer was going, and
+// falls away. It stays upright, since a ball on its side no longer reads as one at this
+// size. `dx` is the pointer's latest horizontal movement.
+function newBall(x, y, dx, now) {
+  const vx = clamp(dx * 0.03, -0.35, 0.35) + random(-0.05, 0.05);
+  return { x, y, vx, vy: random(-0.42, -0.26), born: now };
+}
+
+// A four-point capture sparkle that shrinks away.
+function newSpark(x, y, color, now) {
+  return { x, y, vx: random(-0.06, 0.06), vy: random(-0.08, 0.02), color, born: now };
+}
+
+function drawBalls(ctx, balls, sparks, now, dt, style) {
+  const sprite = pokeballSprite(style.ball);
+  const size = SPRITE_SIZE * BALL.scale;
+  ctx.imageSmoothingEnabled = false;
+
+  for (const ball of balls) {
+    ball.vy += BALL.gravity * dt;
+    ball.x += ball.vx * dt;
+    ball.y += ball.vy * dt;
+
+    const age = (now - ball.born) / BALL.life;
+    ctx.globalAlpha = age < BALL.fadeFrom ? 1 : Math.max(0, (1 - age) / (1 - BALL.fadeFrom));
+    // Whole pixels only, so the sprite stays crisp.
+    ctx.drawImage(sprite, Math.round(ball.x - size / 2), Math.round(ball.y - size / 2), size, size);
+  }
+  ctx.globalAlpha = 1;
+
+  for (const spark of sparks) {
+    spark.x += spark.vx * dt;
+    spark.y += spark.vy * dt;
+    const arm = Math.round(3 * (1 - (now - spark.born) / SPARK_LIFE));
+    if (arm <= 0) continue;
+    const x = Math.round(spark.x);
+    const y = Math.round(spark.y);
+    ctx.fillStyle = spark.color;
+    ctx.fillRect(x - 1, y - 1 - arm * 2, 2, arm * 4 + 2);
+    ctx.fillRect(x - 1 - arm * 2, y - 1, arm * 4 + 2, 2);
+  }
+}
+
 export default function Pointer() {
   const canvasRef = useRef(null);
 
@@ -81,6 +139,10 @@ export default function Pointer() {
     const ctx = canvas.getContext("2d");
     let particles = [];
     let blade = [];
+    let balls = [];
+    let sparks = [];
+    let travelled = 0;
+    let lastFrame = performance.now();
     let frame;
     let timer;
     let style = readTrailStyle();
@@ -111,6 +173,14 @@ export default function Pointer() {
 
       document.documentElement.dataset.trail = next.id;
       style = readTrailStyle();
+      // A burst of sparkles where the new ball was picked.
+      if (style.shape === "pokeball") {
+        const now = performance.now();
+        for (let i = 0; i < 8; i++) {
+          const color = style.colors[i % style.colors.length];
+          sparks.push(newSpark(e.clientX + random(-26, 26), e.clientY + random(-26, 26), color, now));
+        }
+      }
       // Themes with a sound effect ignite on the colour change, if the visitor
       // has switched sound on.
       playIgnite();
@@ -138,6 +208,19 @@ export default function Pointer() {
       mouse.x = e.x;
       mouse.y = e.y;
       if (style.shape === "blade") blade.push({ x: e.x, y: e.y, t: performance.now() });
+      if (style.shape === "pokeball" && mouse.last_x !== undefined) {
+        const dx = mouse.x - mouse.last_x;
+        travelled += Math.hypot(dx, mouse.y - mouse.last_y);
+        if (travelled >= BALL.every && balls.length < BALL.max) {
+          travelled = 0;
+          const now = performance.now();
+          balls.push(newBall(e.x, e.y, dx, now));
+          for (let i = 0; i < 2; i++) {
+            const color = style.colors[Math.floor(Math.random() * style.colors.length)];
+            sparks.push(newSpark(e.x + random(-16, 16), e.y + random(-16, 16), color, now));
+          }
+        }
+      }
     };
 
     const onMouseOut = () => {
@@ -150,8 +233,18 @@ export default function Pointer() {
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const now = performance.now();
+      // Capped so a backgrounded tab doesn't fling everything off screen on return.
+      const dt = Math.min(now - lastFrame, 50);
+      lastFrame = now;
+      balls = balls.filter((ball) => now - ball.born < BALL.life);
+      sparks = sparks.filter((spark) => now - spark.born < SPARK_LIFE);
+      if (balls.length || sparks.length) drawBalls(ctx, balls, sparks, now, dt, style);
+      if (style.shape === "pokeball") {
+        frame = requestAnimationFrame(animate);
+        return;
+      }
       if (style.shape === "blade") {
-        const now = performance.now();
         blade = blade.filter((point) => now - point.t < BLADE_LIFE);
         if (blade.length > 1) drawBlade(ctx, blade, now, style);
         frame = requestAnimationFrame(animate);
@@ -180,11 +273,9 @@ export default function Pointer() {
       derivative_ratio: 10,
     };
 
-    const random = (min, max) => Math.random() * (max - min) + min;
-
     function createParticle() {
-      // The blade is drawn from the pointer's path instead of particles.
-      if (style.shape === "blade") {
+      // The blade and Poké Balls are drawn from the pointer's path instead of particles.
+      if (style.shape === "blade" || style.shape === "pokeball") {
         timer = setTimeout(createParticle, particlesConfig.interval);
         return;
       }
@@ -236,6 +327,8 @@ export default function Pointer() {
       document.removeEventListener("mouseout", onMouseOut);
       particles = [];
       blade = [];
+      balls = [];
+      sparks = [];
     };
   }, []);
 

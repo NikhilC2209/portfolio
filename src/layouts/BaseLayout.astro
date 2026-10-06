@@ -3,7 +3,8 @@ import Nav from "../components/navbar/Nav";
 import TopButton from "../components/TopButton";
 import Pointer from "../components/Pointer";
 import StarField from "../components/StarField";
-import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, trailStorageKey, trailPaletteIds } from "../data/themes.js";
+import PokemonScene from "../components/PokemonScene.astro";
+import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey } from "../data/themes.js";
 
 const { title } = Astro.props;
 // const posts = await Astro.glob("../pages/posts/*.md");
@@ -12,6 +13,7 @@ const posts = ""
 import "../styles/global.css";
 import "../styles/themes/cyberpunk.css";
 import "../styles/themes/starwars.css";
+import "../styles/themes/pokemon.css";
 ---
 
 <!doctype html>
@@ -19,7 +21,7 @@ import "../styles/themes/starwars.css";
   <head>
     <meta charset="UTF-8" />
     <style set:html={themeCss}></style>
-    <script is:inline define:vars={{ themeIds, defaultTheme, storageKey, themePreloads, trailStorageKey, trailPaletteIds }}>
+    <script is:inline define:vars={{ themeIds, defaultTheme, storageKey, themePreloads, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey }}>
       // Applies the saved theme before first paint so the page never flashes
       // the default palette on the way to the chosen one.
       (function () {
@@ -31,6 +33,26 @@ import "../styles/themes/starwars.css";
           /* storage blocked — fall back to the default */
         }
         document.documentElement.dataset.theme = theme;
+
+        var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        // Dialog boxes print their text letter by letter (src/scripts/text-scroll.js);
+        // keep them hidden until that starts so the full text doesn't flash first.
+        if (textScrollThemes.indexOf(theme) !== -1 && !reducedMotion) {
+          document.documentElement.dataset.dialogPending = "";
+        }
+
+        // First page of a visit in a theme with a battle intro: mark it now so the
+        // page's entrance effects wait for it (src/scripts/battle-intro.js).
+        if (battleIntroThemes.indexOf(theme) !== -1 && !reducedMotion) {
+          try {
+            if (!window.sessionStorage.getItem(battleIntroSessionKey)) {
+              document.documentElement.dataset.battleIntro = "";
+            }
+          } catch (e) {
+            /* storage blocked — skip the intro rather than play it on every page */
+          }
+        }
 
         // Restore the cursor-trail palette the visitor last clicked to.
         try {
@@ -97,6 +119,7 @@ import "../styles/themes/starwars.css";
   </head>
   <body class="bg-primary w-full mx-auto bg-[url('/tile_background4.png')]">
     <StarField client:only />
+    <PokemonScene />
     <Nav client:visible posts={posts} />
     {/* <div class="container px-4 w-full lg:w-9/12 mx-auto"> */}
     <div class="container px-4 w-full mx-auto">
@@ -104,5 +127,10 @@ import "../styles/themes/starwars.css";
     </div>
     <TopButton client:only />
     <Pointer client:only />
+    <script>
+      import { autoBattleIntro } from "../scripts/battle-intro.js";
+
+      autoBattleIntro();
+    </script>
   </body>
 </html>

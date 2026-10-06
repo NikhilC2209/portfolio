@@ -1,0 +1,830 @@
+/* Effects that only apply to the Pokémon theme: a night-time handheld game, with white
+   dialog boxes, a battle HP box, menu cursors and type badges. Everything themed is
+   scoped to [data-theme="pokemon"], so the other themes are untouched. Colours come from
+   the theme variables in src/data/themes.js: heading = Poké Ball red, accent = Pikachu
+   yellow, code = grass green. --glitch-a / --glitch-b are the active Poké Ball's colour
+   and the text colour over it, so hover effects follow the ball the visitor clicked to.
+
+   Pixel frames use the offset-shadow trick: four copies of the box pushed out by one
+   "pixel" (--px) in each direction draw a border whose corners are left empty, which
+   reads as the rounded corners of a sprite frame. Set --frame on the element and use
+   var(--pixel-frame) in its box-shadow. */
+
+/* ---------- Pokémon-only markup ---------- */
+
+/* Extra pieces the pages carry for this theme (the HP box, the encounter line, the
+   MissingNo. 404). Hidden everywhere else. */
+.pkmn-only {
+  display: none;
+}
+
+[data-theme="pokemon"] .pkmn-only {
+  display: block;
+}
+
+/* Letters waiting to be printed by src/scripts/text-scroll.js keep their space. */
+.scroll-char {
+  visibility: hidden;
+}
+
+.scroll-char.is-shown {
+  visibility: visible;
+}
+
+/* Set before first paint so dialog text doesn't flash in full before printing. If the
+   script never runs, the text shows anyway after a few seconds (long enough for the
+   battle intro to play first). */
+@keyframes pkmn-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
+[data-dialog-pending] [data-dialog] > * {
+  visibility: hidden;
+  animation: pkmn-failsafe 0s 4s forwards;
+}
+
+/* ---------- Battle intro (src/scripts/battle-intro.js) ---------- */
+
+/* The overlay only exists while the transition plays. It lets clicks through, so a
+   visitor is never blocked by it. */
+.battle-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.battle-intro-flash {
+  position: absolute;
+  inset: 0;
+  background: #F8F8F8;
+  opacity: 0;
+}
+
+.battle-intro-bar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: #05070D;
+}
+
+/* The HP bar fills once the battle has opened, not behind the bars. */
+[data-battle-intro] .pkmn-hp-bar {
+  animation: none;
+  background-size: 0 100%;
+}
+
+/* ---------- Pixel frames ---------- */
+
+[data-theme="pokemon"] :is(.pkmn-dialog, .pkmn-status, .pkmn-menu, .hud-card > div, .content .astro-code, .hud-frame, .content img, ul.hud-cut-border) {
+  --px: 4px;
+  --frame: #2A3354;
+  --pixel-frame: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame),
+    calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame);
+  border-radius: 0;
+}
+
+/* ---------- Background: a night-time route ---------- */
+
+/* The scene is src/components/PokemonScene.astro, fixed behind the page; its art comes
+   from scripts/pokemon-scenery.py, drawn one unit per game pixel and scaled up here by
+   --art (the foreground) and --art-far (the mountains, a size down so they read as
+   distant). Outranks the tile image utility on <body> (attribute + element beats one
+   class). */
+[data-theme="pokemon"] body {
+  background-color: rgb(var(--c-bg));
+  background-image: none;
+}
+
+[data-theme="pokemon"] .pkmn-scene {
+  --art: 4px;
+  --art-far: 3px;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  /* The sky lightens towards the horizon in hard bands, as a 16-colour palette would. */
+  background: linear-gradient(
+    #0A0F1F 0 38%,
+    #0C1327 38% 56%,
+    #0F182F 56% 70%,
+    #121D38 70% 81%,
+    #162343 81%
+  );
+}
+
+@media (max-width: 767px) {
+  [data-theme="pokemon"] .pkmn-scene {
+    --art: 3px;
+    --art-far: 2px;
+  }
+}
+
+[data-theme="pokemon"] .pkmn-scene > * {
+  position: absolute;
+  image-rendering: pixelated;
+}
+
+/* Three star layers. The dim one holds still; the other two breathe out of step with
+   each other, so the sky shimmers without any star blinking hard. They thin out
+   towards the horizon. */
+[data-theme="pokemon"] .pkmn-stars {
+  inset: 0 0 25% 0;
+  background-repeat: repeat;
+  -webkit-mask-image: linear-gradient(black 35%, transparent);
+  mask-image: linear-gradient(black 35%, transparent);
+}
+
+[data-theme="pokemon"] .pkmn-stars-dim {
+  background-image: url("/pokemon/stars-dim.svg");
+  background-size: 360px 360px;
+}
+
+@keyframes pkmn-twinkle {
+  to {
+    opacity: 0.3;
+  }
+}
+
+[data-theme="pokemon"] .pkmn-stars-mid {
+  background-image: url("/pokemon/stars-mid.svg");
+  background-size: 460px 460px;
+  animation: pkmn-twinkle 3.8s ease-in-out infinite alternate;
+}
+
+[data-theme="pokemon"] .pkmn-stars-bright {
+  background-image: url("/pokemon/stars-bright.svg");
+  background-size: 580px 580px;
+  animation: pkmn-twinkle 6.1s ease-in-out -2s infinite alternate;
+}
+
+/* The moon, with a halo of stepped rings rather than a smooth glow. The halo and the
+   moon are both pseudo-elements so the halo can sit behind. */
+/* Low enough that the sticky nav never clips the halo. */
+[data-theme="pokemon"] .pkmn-moon {
+  top: max(16vh, 150px);
+  right: 9vw;
+  width: calc(32 * var(--art));
+  height: calc(32 * var(--art));
+}
+
+/* On phones, a small moon tucked in the corner above the HP box. */
+@media (max-width: 767px) {
+  [data-theme="pokemon"] .pkmn-moon {
+    top: 64px;
+    right: 12px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+[data-theme="pokemon"] .pkmn-moon::before,
+[data-theme="pokemon"] .pkmn-moon::after {
+  content: "";
+  position: absolute;
+}
+
+[data-theme="pokemon"] .pkmn-moon::before {
+  inset: -50%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle closest-side,
+    rgb(243 231 196 / 0.1) 0 45%,
+    rgb(243 231 196 / 0.06) 45% 62%,
+    rgb(243 231 196 / 0.03) 62% 80%,
+    transparent 80%
+  );
+}
+
+[data-theme="pokemon"] .pkmn-moon::after {
+  inset: 0;
+  background: url("/pokemon/moon.svg") center / 100% 100%;
+  image-rendering: pixelated;
+}
+
+/* Clouds drift right to left across the moon; the far one is smaller and slower. */
+@keyframes pkmn-drift {
+  from {
+    transform: translateX(100vw);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+[data-theme="pokemon"] .pkmn-cloud {
+  left: 0;
+  background: url("/pokemon/cloud.svg") center / 100% 100%;
+}
+
+[data-theme="pokemon"] .pkmn-cloud-near {
+  top: 16vh;
+  width: calc(44 * var(--art));
+  height: calc(14 * var(--art));
+  animation: pkmn-drift 150s linear -40s infinite;
+}
+
+[data-theme="pokemon"] .pkmn-cloud-far {
+  top: 27vh;
+  width: calc(44 * var(--art-far));
+  height: calc(14 * var(--art-far));
+  opacity: 0.7;
+  animation: pkmn-drift 230s linear -150s infinite;
+}
+
+/* The horizon: mountains, then two rows of pines, then the tall grass. */
+[data-theme="pokemon"] .pkmn-mountains {
+  left: 0;
+  right: 0;
+  bottom: calc(10 * var(--art));
+  height: calc(44 * var(--art-far));
+  background: url("/pokemon/mountains.svg") repeat-x left bottom / calc(160 * var(--art-far)) 100%;
+}
+
+[data-theme="pokemon"] .pkmn-trees {
+  left: 0;
+  right: 0;
+  bottom: calc(3 * var(--art));
+  height: calc(30 * var(--art));
+  background: url("/pokemon/trees.svg") repeat-x left bottom / calc(96 * var(--art)) 100%;
+}
+
+[data-theme="pokemon"] .pkmn-grass {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(14 * var(--art));
+  background: url("/pokemon/tall-grass.svg") repeat-x left bottom / calc(48 * var(--art)) 100%;
+}
+
+/* Fireflies wander over the treeline, glowing up and fading out. */
+@keyframes pkmn-firefly {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  25% {
+    transform: translate(10px, -10px);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(20px, -24px);
+    opacity: 0.25;
+  }
+  75% {
+    transform: translate(-6px, -30px);
+    opacity: 0.9;
+  }
+}
+
+[data-theme="pokemon"] .pkmn-firefly {
+  left: var(--x);
+  bottom: var(--y);
+  width: var(--art);
+  height: var(--art);
+  background: #E4FF8A;
+  box-shadow: 0 0 8px 2px rgb(210 255 110 / 0.45);
+  animation: pkmn-firefly var(--duration) ease-in-out var(--delay) infinite;
+}
+
+/* Something is moving in the tall grass: each patch shakes briefly once a cycle. */
+@keyframes pkmn-rustle {
+  0%, 90%, 97%, 100% {
+    transform: none;
+  }
+  91%, 94% {
+    transform: translateX(calc(var(--art) * -1));
+  }
+  92.5%, 95.5% {
+    transform: translateX(var(--art));
+  }
+}
+
+[data-theme="pokemon"] .pkmn-rustle {
+  left: var(--x);
+  bottom: calc(6 * var(--art));
+  width: calc(12 * var(--art));
+  height: calc(8 * var(--art));
+  background: url("/pokemon/grass-tuft.svg") center / 100% 100%;
+  animation: pkmn-rustle 12s steps(1, end) var(--delay) infinite;
+}
+
+/* ---------- Type ---------- */
+
+/* Press Start 2P has one weight; synthetic bold smears its pixels. A one-pixel drop
+   shadow (an eighth of an em on its 8×8 grid) is how the games set text. */
+[data-theme="pokemon"] .font-display {
+  font-weight: 400;
+  font-synthesis: none;
+  line-height: 1.5;
+  text-shadow: 0.125em 0.125em 0 rgb(0 0 0 / 0.45);
+}
+
+[data-theme="pokemon"] :is(h1, h2, h3, h4, h5, h6):not(.font-display) {
+  text-shadow: 0.08em 0.08em 0 rgb(0 0 0 / 0.4);
+}
+
+/* Every glyph is a full em wide, so display sizes step down from the other themes'. */
+[data-theme="pokemon"] nav h1.font-display {
+  font-size: 1.25rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  [data-theme="pokemon"] nav h1.font-display {
+    font-size: 1.75rem;
+  }
+}
+
+/* Menu items are set in capitals, as in the games' start menu, and in Pixelify Sans'
+   boldest weight so they hold their own beside the logo. */
+[data-theme="pokemon"] nav li h1 {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-theme="pokemon"] h2.font-display.text-6xl {
+  font-size: clamp(1.75rem, 6vw, 3rem);
+}
+
+[data-theme="pokemon"] h1.font-display.text-4xl {
+  font-size: clamp(1.125rem, 3.4vw, 2rem);
+}
+
+[data-theme="pokemon"] #home span.font-display {
+  font-size: clamp(0.875rem, 1.8vw, 1.5rem);
+}
+
+/* ---------- Hover: the ball's colours ---------- */
+
+/* Titles and headings inside links hop up a pixel and take a hard shadow in the active
+   Poké Ball's colour. Section headings inside articles are left alone. */
+[data-theme="pokemon"] :is(.font-display, a :is(h1, h2, h3, h4)) {
+  transition: none;
+}
+
+[data-theme="pokemon"] :is(.font-display:hover, a:hover :is(h1, h2, h3, h4)) {
+  color: rgb(var(--glitch-b));
+  text-shadow: 0.125em 0.125em 0 rgb(var(--glitch-a));
+  transform: translateY(-2px);
+}
+
+/* `transform` is ignored on inline boxes; make the typing animation's span movable. */
+[data-theme="pokemon"] span.font-display {
+  display: inline-block;
+}
+
+/* ---------- Home: a wild encounter ---------- */
+
+/* The dialog box: white, with a dark frame and a pale inner rule, in the games' own
+   text colours. A red arrow bobs in the corner once the text has printed. */
+[data-theme="pokemon"] .pkmn-dialog {
+  position: relative;
+  margin: 4px;
+  padding: 1.4rem 1.75rem 2rem;
+  background: #F8F8F8;
+  box-shadow: var(--pixel-frame), inset 0 0 0 4px #A9BEE6;
+}
+
+[data-theme="pokemon"] .pkmn-dialog :is(p, h1, .font-display),
+[data-theme="pokemon"] .pkmn-dialog .font-display:hover {
+  color: #404050;
+  text-shadow: 0.125em 0.125em 0 #D0D0D8;
+  transform: none;
+}
+
+[data-theme="pokemon"] .pkmn-encounter {
+  margin: 0 0 1rem;
+  font: 400 clamp(0.75rem, 1.2vw, 1rem) / 1.8 "Press Start 2P", monospace;
+}
+
+[data-theme="pokemon"] #home .pkmn-dialog h1 {
+  font-size: clamp(1rem, 2.2vw, 1.75rem);
+  line-height: 1.7;
+}
+
+@keyframes pkmn-arrow {
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+[data-theme="pokemon"] .pkmn-dialog::after {
+  content: "";
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1rem;
+  width: 12px;
+  height: 6px;
+  background: #E3350D;
+  clip-path: polygon(0 0, 12px 0, 12px 2px, 10px 2px, 10px 4px, 8px 4px, 8px 6px, 4px 6px, 4px 4px, 2px 4px, 2px 2px, 0 2px);
+  animation: pkmn-arrow 0.9s steps(1, end) infinite;
+}
+
+[data-theme="pokemon"] .pkmn-dialog[data-scrolling]::after {
+  visibility: hidden;
+}
+
+/* The wild Pokémon's HP box, in the corner of the battle screen. */
+[data-theme="pokemon"] .battle-sprite {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+[data-theme="pokemon"] .pkmn-status {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 0.6rem 1.5rem;
+  min-width: 15rem;
+  padding: 0.8rem 1rem 0.9rem;
+  background: #F8F8E0;
+  box-shadow: var(--pixel-frame), inset 0 -4px 0 #D8D8B8;
+  color: #404050;
+  font: 400 0.875rem / 1 "Press Start 2P", monospace;
+  text-shadow: 0.125em 0.125em 0 #D8D8C0;
+}
+
+[data-theme="pokemon"] .pkmn-status-level {
+  font-size: 0.75rem;
+}
+
+[data-theme="pokemon"] .pkmn-status-hp {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 3px 4px 3px 3px;
+  background: #484858;
+}
+
+[data-theme="pokemon"] .pkmn-status-hp > span:first-child {
+  font-size: 0.5rem;
+  color: #F8B830;
+  text-shadow: none;
+}
+
+/* Fills up on arrival, in pixel steps. */
+@keyframes pkmn-hp-fill {
+  from {
+    background-size: 0 100%;
+  }
+}
+
+[data-theme="pokemon"] .pkmn-hp-bar {
+  flex: 1;
+  height: 6px;
+  background: linear-gradient(#70F8A8 0 2px, #58D080 2px) no-repeat, #F8F8F8;
+  background-size: 100% 100%;
+  animation: pkmn-hp-fill 1s steps(16, end) 0.4s both;
+}
+
+/* The grassy platform the Pokémon stands on. */
+[data-theme="pokemon"] .battle-sprite::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1.25rem;
+  z-index: -1;
+  /* Sized to the photo (10rem, 36rem from lg), not to the status box beside it. */
+  width: 14rem;
+  height: 3.5rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #3F7A4A 0 58%, #2F6040 60% 84%, #22472F 86% 97%, transparent 99%);
+}
+
+/* Hovering the photo wobbles it like a Poké Ball about to catch. */
+@keyframes pkmn-wobble {
+  0%, 100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-7deg);
+  }
+  40% {
+    transform: rotate(6deg);
+  }
+  60% {
+    transform: rotate(-3deg);
+  }
+  80% {
+    transform: rotate(2deg);
+  }
+}
+
+[data-theme="pokemon"] .battle-sprite:hover .profile-pic {
+  animation: pkmn-wobble 0.7s ease-in-out;
+}
+
+@media (min-width: 1024px) {
+  /* Tucked into the photo's top corner, as the enemy's box sits in battle. */
+  [data-theme="pokemon"] .pkmn-status {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    z-index: 3;
+  }
+
+  [data-theme="pokemon"] .battle-sprite::after {
+    bottom: -5%;
+    width: 42rem;
+    height: 22%;
+  }
+}
+
+/* ---------- Cards ---------- */
+
+/* Menu panels: a dark pixel frame that lights up in the active ball's colour, with the
+   menu cursor pointing at the title. */
+[data-theme="pokemon"] .hud-card {
+  display: block;
+}
+
+[data-theme="pokemon"] .hud-card > div {
+  position: relative;
+  margin-left: 4px;
+  margin-right: 4px;
+  border: 0;
+  background-color: rgb(var(--c-surface) / 0.85);
+  box-shadow: var(--pixel-frame);
+  transition: none;
+}
+
+[data-theme="pokemon"] .hud-card:hover > div {
+  --frame: rgb(var(--glitch-a));
+  box-shadow: var(--pixel-frame), 0 0 0 8px rgb(var(--glitch-a) / 0.15);
+}
+
+[data-theme="pokemon"] .hud-card :is(h1, h2) {
+  position: relative;
+  padding-left: 1.1em;
+}
+
+@keyframes pkmn-cursor {
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+[data-theme="pokemon"] .hud-card :is(h1, h2)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.32em;
+  width: 0.5em;
+  height: 0.75em;
+  background: currentColor;
+  clip-path: polygon(0 0, 50% 25%, 100% 50%, 50% 75%, 0 100%);
+  visibility: hidden;
+}
+
+[data-theme="pokemon"] .hud-card:hover :is(h1, h2)::before {
+  visibility: visible;
+  animation: pkmn-cursor 0.6s steps(1, end) infinite;
+}
+
+/* Numbered like Pokédex entries in the blog, writeup and thoughts listings. */
+@counter-style pkmn-dex {
+  system: extends decimal;
+  pad: 3 "0";
+}
+
+[data-theme="pokemon"] .hud-list {
+  counter-reset: pkmn-dex;
+}
+
+[data-theme="pokemon"] .hud-list > li {
+  counter-increment: pkmn-dex;
+}
+
+[data-theme="pokemon"] .hud-list .hud-card > div::before {
+  content: "No." counter(pkmn-dex, pkmn-dex);
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  padding: 0.55rem 0.7rem 0.5rem;
+  font: 400 0.625rem/1 "Press Start 2P", monospace;
+  color: rgb(var(--c-text));
+  background: var(--frame);
+}
+
+/* Tags as type badges. */
+[data-theme="pokemon"] .hud-tag {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  padding: 0.55em 0.75em 0.45em;
+  border-radius: 0;
+  font: 400 0.625rem/1 "Press Start 2P", monospace;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  background: rgb(var(--c-code));
+  text-shadow: 1px 1px 0 rgb(0 0 0 / 0.45);
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.22), inset 0 3px 0 rgb(255 255 255 / 0.22);
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 0 calc(100% - 2px), 0 2px);
+}
+
+[data-theme="pokemon"] .hud-tag.text-dk-accent {
+  color: #3D2E00;
+  background: rgb(var(--c-accent));
+  text-shadow: 1px 1px 0 rgb(255 255 255 / 0.4);
+}
+
+/* ---------- Posts ---------- */
+
+/* Code blocks are Technical Machines: TM01, TM02, … Shiki sets the dark background
+   inline, so the panel colour has to outrank it. */
+[data-theme="pokemon"] .content {
+  counter-reset: pkmn-tm;
+}
+
+[data-theme="pokemon"] .content .astro-code {
+  position: relative;
+  counter-increment: pkmn-tm;
+  margin: 1.5rem 4px;
+  padding-top: 3rem;
+  background-color: rgb(var(--c-surface)) !important;
+}
+
+[data-theme="pokemon"] .content .astro-code::before {
+  content: "TM" counter(pkmn-tm, decimal-leading-zero);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.6rem 1rem 0.5rem;
+  font: 400 0.625rem/1.2 "Press Start 2P", monospace;
+  color: #FFFFFF;
+  background: #2A3354;
+}
+
+/* Images sit in a pixel frame. */
+[data-theme="pokemon"] :is(.hud-frame, .content img) {
+  --frame: rgb(var(--c-muted) / 0.45);
+  box-shadow: var(--pixel-frame);
+}
+
+/* ---------- 404: a wild MissingNo. ---------- */
+
+[data-theme="pokemon"] .not-pkmn {
+  display: none;
+}
+
+[data-theme="pokemon"] .pkmn-404 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem;
+  padding: 3rem 1rem;
+}
+
+[data-theme="pokemon"] .missingno-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+/* The same grassy platform as the home page's battle scene. */
+[data-theme="pokemon"] .missingno-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1.5rem;
+  z-index: -1;
+  width: 22rem;
+  height: 4.5rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #3F7A4A 0 58%, #2F6040 60% 84%, #22472F 86% 97%, transparent 99%);
+}
+
+/* Every few seconds the sprite tears: a jolt sideways and a flip, then back. */
+@keyframes pkmn-glitch {
+  0%, 90%, 100% {
+    transform: none;
+  }
+  92% {
+    transform: translateX(6px) skewX(-8deg);
+  }
+  95% {
+    transform: scaleX(-1) translateY(-4px);
+  }
+}
+
+[data-theme="pokemon"] .missingno {
+  display: block;
+  width: min(12rem, 45vw);
+  height: auto;
+  image-rendering: pixelated;
+  animation: pkmn-glitch 3.2s steps(1, end) infinite;
+}
+
+[data-theme="pokemon"] .pkmn-404-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: min(100%, 56rem);
+}
+
+[data-theme="pokemon"] .pkmn-404-ui .pkmn-dialog {
+  flex: 1;
+}
+
+[data-theme="pokemon"] .pkmn-404-ui .pkmn-dialog h1 {
+  margin: 0;
+  font-size: clamp(0.875rem, 1.8vw, 1.25rem);
+  line-height: 1.8;
+}
+
+/* The battle menu. Only RUN works. */
+[data-theme="pokemon"] .pkmn-menu {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-content: center;
+  gap: 1.1rem 2.5rem;
+  margin: 4px;
+  padding: 1.4rem 1.75rem 1.4rem 2.5rem;
+  background: #F8F8F8;
+  box-shadow: var(--pixel-frame), inset 0 0 0 4px #A9BEE6;
+  font: 400 clamp(0.75rem, 1.3vw, 1rem) / 1 "Press Start 2P", monospace;
+  white-space: nowrap;
+}
+
+[data-theme="pokemon"] .pkmn-menu > span {
+  color: #B8B8C4;
+}
+
+[data-theme="pokemon"] .pkmn-menu > a {
+  position: relative;
+  color: #404050;
+  text-shadow: 0.125em 0.125em 0 #D0D0D8;
+}
+
+/* The cursor rests on RUN. */
+[data-theme="pokemon"] .pkmn-menu > a::before {
+  content: "";
+  position: absolute;
+  left: -1.1em;
+  top: 0;
+  width: 0.5em;
+  height: 1em;
+  background: #404050;
+  clip-path: polygon(0 0, 50% 25%, 100% 50%, 50% 75%, 0 100%);
+  animation: pkmn-cursor 0.6s steps(1, end) infinite;
+}
+
+[data-theme="pokemon"] .pkmn-menu > a:is(:hover, :focus-visible) {
+  color: #E3350D;
+  outline: none;
+}
+
+@media (min-width: 768px) {
+  [data-theme="pokemon"] .pkmn-404-ui {
+    flex-direction: row;
+  }
+}
+
+/* ---------- Theme switcher ---------- */
+
+[data-theme="pokemon"] .hud-cut-border {
+  border-radius: 0;
+}
+
+[data-theme="pokemon"] ul.hud-cut-border {
+  --frame: rgb(var(--c-text));
+  border: 0;
+  background: rgb(var(--c-surface));
+  box-shadow: var(--pixel-frame);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="pokemon"] .pkmn-dialog::after,
+  [data-theme="pokemon"] .pkmn-hp-bar,
+  [data-theme="pokemon"] .hud-card:hover :is(h1, h2)::before,
+  [data-theme="pokemon"] .battle-sprite:hover .profile-pic,
+  [data-theme="pokemon"] .missingno,
+  [data-theme="pokemon"] .pkmn-menu > a::before,
+  [data-theme="pokemon"] .pkmn-stars,
+  [data-theme="pokemon"] .pkmn-cloud,
+  [data-theme="pokemon"] .pkmn-rustle {
+    animation: none;
+  }
+
+  /* Fireflies hold still, lit. */
+  [data-theme="pokemon"] .pkmn-firefly {
+    animation: none;
+    opacity: 0.8;
+  }
+
+  [data-theme="pokemon"] :is(.font-display:hover, a:hover :is(h1, h2, h3, h4)) {
+    transform: none;
+  }
+}
