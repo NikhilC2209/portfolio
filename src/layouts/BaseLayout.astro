@@ -4,7 +4,8 @@ import TopButton from "../components/TopButton";
 import Pointer from "../components/Pointer";
 import StarField from "../components/StarField";
 import PokemonScene from "../components/PokemonScene.astro";
-import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey } from "../data/themes.js";
+import BlueprintScene from "../components/BlueprintScene.astro";
+import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, themeSchemes, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey } from "../data/themes.js";
 
 const { title } = Astro.props;
 // const posts = await Astro.glob("../pages/posts/*.md");
@@ -14,6 +15,7 @@ import "../styles/global.css";
 import "../styles/themes/cyberpunk.css";
 import "../styles/themes/starwars.css";
 import "../styles/themes/pokemon.css";
+import "../styles/themes/blueprint.css";
 ---
 
 <!doctype html>
@@ -21,7 +23,7 @@ import "../styles/themes/pokemon.css";
   <head>
     <meta charset="UTF-8" />
     <style set:html={themeCss}></style>
-    <script is:inline define:vars={{ themeIds, defaultTheme, storageKey, themePreloads, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey }}>
+    <script is:inline define:vars={{ themeIds, defaultTheme, storageKey, themePreloads, themeSchemes, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey }}>
       // Applies the saved theme before first paint so the page never flashes
       // the default palette on the way to the chosen one.
       (function () {
@@ -33,6 +35,8 @@ import "../styles/themes/pokemon.css";
           /* storage blocked — fall back to the default */
         }
         document.documentElement.dataset.theme = theme;
+        // Light themes drop the `dark` class so Tailwind's non-dark utilities apply.
+        document.documentElement.classList.toggle("dark", themeSchemes[theme] !== "light");
 
         var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -120,6 +124,7 @@ import "../styles/themes/pokemon.css";
   <body class="bg-primary w-full mx-auto bg-[url('/tile_background4.png')]">
     <StarField client:only />
     <PokemonScene />
+    <BlueprintScene />
     <Nav client:visible posts={posts} />
     {/* <div class="container px-4 w-full lg:w-9/12 mx-auto"> */}
     <div class="container px-4 w-full mx-auto">

@@ -1,6 +1,9 @@
 // Theme palettes. Add a theme here and it shows up in the switcher automatically —
 // the CSS variables below are generated from this list at build time.
 //
+// scheme   'dark' (default) or 'light'. A light theme drops the `dark` class from
+//          <html>, so Tailwind's non-dark utilities apply.
+//
 // Roles:
 //   bg      page background
 //   heading headings, links, the primary accent colour
@@ -217,10 +220,35 @@ export const themes = [
       ],
     },
   },
+  {
+    id: 'blueprint',
+    label: 'Blueprint',
+    blurb: 'Drafting paper and ink',
+    scheme: 'light',
+    colors: {
+      bg: '#EEF2F7',      // pale blue-grey paper
+      heading: '#0F3B66', // navy ink
+      accent: '#1D6FB8',  // pen blue
+      text: '#1A2430',    // near-black ink
+      muted: '#5A6B7C',   // pencil grey
+      surface: '#DEE7F2', // panel
+      code: '#B03A2E',    // annotation red
+    },
+    fonts: {
+      display: '"Space Grotesk", sans-serif',
+      heading: '"Space Grotesk", sans-serif',
+    },
+    // Plotted crosses, like marks on graph paper.
+    trail: {
+      shape: 'cross',
+      colors: ['heading', 'heading', 'accent', 'code'],
+    },
+  },
 ];
 
 export const defaultTheme = 'matrix';
 export const themeIds = themes.map((t) => t.id);
+export const themeSchemes = Object.fromEntries(themes.map((t) => [t.id, t.scheme ?? 'dark']));
 export const storageKey = 'site-theme';
 export const themePreloads = Object.fromEntries(themes.map((t) => [t.id, t.preload ?? []]));
 export const trailStorageKey = 'site-trail';

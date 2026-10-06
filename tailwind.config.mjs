@@ -14,11 +14,13 @@ export default {
 				heading: 'var(--font-heading)',
 			},
 			colors: {
-				// Light-mode tokens. The site runs permanently in `dark`, so these are
-				// only reachable if a light theme is ever added.
-				'primary': '#FFF',
-				'secondary': '#1D4CC4',
-				'accent': '#0D2563',
+				// Light-mode tokens, used by themes with scheme: 'light' (the `dark` class
+				// is dropped there). They point at the same variables as their dk-
+				// counterparts, so markup written as `bg-primary dark:bg-dk-primary`
+				// gets the active theme's colour either way.
+				'primary': themed('bg'),
+				'secondary': themed('heading'),
+				'accent': themed('accent'),
 
 				'text': themed('text'),
 				'dk-primary': themed('bg'),

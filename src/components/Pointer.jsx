@@ -353,6 +353,16 @@ function Particle(x, y, vx, vy, radius, color, shape, life, spread, ctx) {
 
   this.draw = function () {
     this.ctx.fillStyle = this.color;
+    if (this.shape === "cross") {
+      // A plotted cross, like a mark on graph paper.
+      const arm = Math.round(this.radius * 1.8);
+      const thickness = this.radius > 3.5 ? 2 : 1;
+      const x = Math.round(this.x);
+      const y = Math.round(this.y);
+      this.ctx.fillRect(x - arm, y - Math.floor(thickness / 2), arm * 2, thickness);
+      this.ctx.fillRect(x - Math.floor(thickness / 2), y - arm, thickness, arm * 2);
+      return;
+    }
     if (this.shape === "square") {
       // Snap to whole pixels so the fragments stay crisp rather than blurry.
       const size = Math.round(this.radius * 1.6);

@@ -1,0 +1,219 @@
+/* Blueprint — the one light theme. Everything is scoped to [data-theme="blueprint"],
+   so the dark themes are untouched. Colours come from src/data/themes.js:
+   heading = navy ink, accent = pen blue, code = annotation red, surface = panel.
+
+   This theme has scheme: 'light', so <html> loses its `dark` class and Tailwind's
+   non-dark utilities apply. Those tokens point at the same theme variables, so most
+   of the site follows along without markup changes. */
+
+/* ---------- Graph paper ---------- */
+
+/* Outranks the tile image utility on <body> (attribute + element beats one class). */
+[data-theme="blueprint"] body {
+  background-color: rgb(var(--c-bg));
+  background-image:
+    linear-gradient(rgb(var(--c-heading) / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--c-heading) / 0.07) 1px, transparent 1px),
+    linear-gradient(rgb(var(--c-heading) / 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--c-heading) / 0.13) 1px, transparent 1px);
+  background-size: 16px 16px, 16px 16px, 96px 96px, 96px 96px;
+  background-attachment: fixed;
+}
+
+/* ---------- Panels ---------- */
+
+/* Cards and post panels are sheets laid on the paper: white, a thin ink rule, no glow. */
+[data-theme="blueprint"] .hud-card {
+  display: block;
+}
+
+[data-theme="blueprint"] .hud-card > div {
+  padding: 14px;
+  border: 1px solid rgb(var(--c-heading) / 0.35);
+  border-radius: 0;
+  background-color: rgb(255 255 255 / 0.85);
+  box-shadow: 0 1px 0 rgb(var(--c-heading) / 0.08);
+}
+
+[data-theme="blueprint"] .hud-card:hover > div {
+  border-color: rgb(var(--c-accent));
+  box-shadow: 0 0 0 3px rgb(var(--c-accent) / 0.12);
+}
+
+[data-theme="blueprint"] :is(article.hud-cut, .hud-cut) {
+  background-color: rgb(255 255 255 / 0.75);
+}
+
+/* Post images sit on a mount with a hairline rule rather than HUD brackets. */
+[data-theme="blueprint"] :is(.hud-frame, .content img) {
+  padding: 6px;
+  background-color: rgb(255 255 255 / 0.9);
+  border: 1px solid rgb(var(--c-heading) / 0.25);
+}
+
+/* The notice banner, which otherwise keeps its own blue. */
+[data-theme="blueprint"] #alert-1 {
+  background-color: rgb(var(--c-surface));
+  color: rgb(var(--c-heading));
+  border: 1px solid rgb(var(--c-heading) / 0.2);
+  border-radius: 0;
+}
+
+/* ---------- Drafting labels ---------- */
+
+/* The same data-hud attributes and card numbering the other themes use, drawn here as
+   mono annotations underlined with a dimension line. */
+[data-theme="blueprint"] [data-hud]::before,
+[data-theme="blueprint"] .hud-list .hud-card :is(h1, h2)::before {
+  display: block;
+  width: fit-content;
+  margin-bottom: 0.6rem;
+  padding-bottom: 3px;
+  border-bottom: 1px dashed rgb(var(--c-accent) / 0.5);
+  font: 600 12px/1.2 "JetBrains Mono", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: rgb(var(--c-accent));
+}
+
+[data-theme="blueprint"] [data-hud]::before {
+  content: attr(data-hud);
+}
+
+[data-theme="blueprint"] .hud-list {
+  counter-reset: bp-entry;
+}
+
+[data-theme="blueprint"] .hud-list > li {
+  counter-increment: bp-entry;
+}
+
+[data-theme="blueprint"] .hud-list .hud-card :is(h1, h2)::before {
+  content: "ENTRY_" counter(bp-entry, decimal-leading-zero);
+}
+
+/* ---------- Ink, not neon ---------- */
+
+/* Nothing here glows; keep any inherited glow off titles and the typing animation. */
+[data-theme="blueprint"] :is(.font-display, h1, h2, h3, h4) {
+  text-shadow: none;
+}
+
+[data-theme="blueprint"] a:hover :is(h1, h2, h3, h4),
+[data-theme="blueprint"] .font-display:hover {
+  color: rgb(var(--c-accent));
+}
+
+/* ---------- Drafting sheet backdrop (src/components/BlueprintScene.astro) ----------
+   Schematics in the page margins, in the spirit of the drawing sheet in Tom & Jerry's
+   "Designs on Jerry". Behind everything, never interactive, and hidden below lg where
+   the content fills the width. */
+
+.bp-scene {
+  display: none;
+}
+
+[data-theme="blueprint"] .bp-scene {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  color: rgb(var(--c-heading));
+}
+
+@media (min-width: 1280px) {
+  [data-theme="blueprint"] .bp-scene {
+    display: block;
+  }
+}
+
+[data-theme="blueprint"] .bp-fig {
+  position: fixed;
+  opacity: 0.26;
+  overflow: visible;
+}
+
+/* The figures sit in the gutters either side of the centred content. */
+[data-theme="blueprint"] .bp-fig-trap { left: 10px; top: 120px; width: 190px; }
+[data-theme="blueprint"] .bp-fig-pulley { right: 24px; top: 150px; width: 150px; }
+[data-theme="blueprint"] .bp-fig-gears { left: 18px; bottom: 90px; width: 170px; }
+[data-theme="blueprint"] .bp-fig-arc { right: 18px; bottom: 150px; width: 180px; }
+[data-theme="blueprint"] .bp-fig-title { right: 16px; bottom: 16px; width: 230px; opacity: 0.34; }
+
+@media (min-width: 1700px) {
+  [data-theme="blueprint"] .bp-fig-trap { left: 40px; width: 230px; }
+  [data-theme="blueprint"] .bp-fig-pulley { right: 60px; width: 180px; }
+  [data-theme="blueprint"] .bp-fig-gears { left: 48px; width: 210px; }
+  [data-theme="blueprint"] .bp-fig-arc { right: 48px; width: 220px; }
+}
+
+/* Lettering: mono, like the annotations on a drawing. */
+[data-theme="blueprint"] .bp-scene text {
+  fill: currentColor;
+  stroke: none;
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 0.1em;
+}
+
+[data-theme="blueprint"] .bp-scene .bp-label { font-size: 11px; font-weight: 600; }
+[data-theme="blueprint"] .bp-scene .bp-title { font-size: 11px; font-weight: 600; }
+[data-theme="blueprint"] .bp-scene .bp-note { font-size: 8px; }
+[data-theme="blueprint"] .bp-scene .bp-dim { font-size: 8px; }
+
+/* ---------- Life ----------
+   Drawn on once when the sheet appears, then a few parts keep working: the gears turn,
+   the pulley winds, its weight breathes, the trap's arm rocks on its spring and the ball
+   waits at the start of its arc. */
+
+@keyframes bp-draw {
+  from { stroke-dashoffset: 900; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 0.26; }
+}
+
+@keyframes bp-spin { to { transform: rotate(360deg); } }
+@keyframes bp-spin-back { to { transform: rotate(-360deg); } }
+@keyframes bp-bob { 50% { transform: translateY(5px); } }
+@keyframes bp-rock { 50% { transform: rotate(-3.5deg); } }
+@keyframes bp-roll { 50% { transform: translate(6px, -4px); } }
+
+[data-theme="blueprint"] .bp-fig :is(line, path, rect, circle) {
+  stroke-dasharray: 900;
+  animation: bp-draw 2.4s ease-out backwards;
+}
+
+/* Keep the deliberately dashed construction lines dashed. */
+[data-theme="blueprint"] .bp-fig [stroke-dasharray]:not([stroke-dasharray="900"]) {
+  stroke-dasharray: revert-layer;
+  animation: none;
+}
+
+[data-theme="blueprint"] .bp-fig-pulley :is(line, path, rect, circle) { animation-delay: 0.15s; }
+[data-theme="blueprint"] .bp-fig-gears :is(line, path, rect, circle) { animation-delay: 0.3s; }
+[data-theme="blueprint"] .bp-fig-arc :is(line, path, rect, circle) { animation-delay: 0.45s; }
+[data-theme="blueprint"] .bp-fig-title :is(line, path, rect, circle) { animation-delay: 0.6s; }
+
+[data-theme="blueprint"] .bp-scene :is(.bp-wheel, .bp-gear-a, .bp-gear-b, .bp-weight, .bp-lever, .bp-ball) {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+[data-theme="blueprint"] .bp-wheel { animation: bp-spin 14s linear infinite; }
+[data-theme="blueprint"] .bp-gear-a { animation: bp-spin 22s linear infinite; }
+[data-theme="blueprint"] .bp-gear-b { animation: bp-spin-back 14.7s linear infinite; }
+[data-theme="blueprint"] .bp-weight { animation: bp-bob 7s ease-in-out infinite; }
+[data-theme="blueprint"] .bp-ball { animation: bp-roll 5s ease-in-out infinite; }
+
+/* The arm pivots on the spring, not on its own centre. */
+[data-theme="blueprint"] .bp-lever {
+  transform-origin: 10% 90%;
+  animation: bp-rock 6.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="blueprint"] .bp-fig :is(line, path, rect, circle),
+  [data-theme="blueprint"] .bp-scene :is(.bp-wheel, .bp-gear-a, .bp-gear-b, .bp-weight, .bp-lever, .bp-ball) {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

@@ -1,0 +1,106 @@
+---
+// The Blueprint theme's backdrop: schematics drawn in the margins of the page, in the
+// spirit of the drafting sheet in Tom & Jerry's "Designs on Jerry" (1955) — a contraption
+// worked out in parts, with dimension lines and a title block. All original line work.
+//
+// Figures sit in the gutters either side of the content and are hidden below lg, where
+// the content fills the width. Animated by src/styles/themes/blueprint.css; the whole
+// scene is hidden in every other theme.
+---
+
+<div class="bp-only bp-scene" aria-hidden="true">
+  <!-- FIG. 1 — the trap itself: baseboard, spring, lever arm and the bait hook -->
+  <svg class="bp-fig bp-fig-trap" viewBox="0 0 190 150" fill="none" stroke="currentColor">
+    <!-- baseboard, in plan -->
+    <rect x="18" y="86" width="150" height="44" stroke-width="1.6" />
+    <line x1="18" y1="96" x2="168" y2="96" stroke-width="0.8" stroke-dasharray="4 4" />
+    <!-- pivot and the sprung arm -->
+    <circle cx="48" cy="108" r="5" stroke-width="1.4" />
+    <circle cx="48" cy="108" r="1.6" stroke-width="1.4" />
+    <g class="bp-lever">
+      <line x1="48" y1="108" x2="146" y2="58" stroke-width="1.8" />
+      <line x1="146" y1="58" x2="150" y2="70" stroke-width="1.4" />
+    </g>
+    <!-- coil spring around the pivot -->
+    <path
+      d="M40 118c-7 0-11-5-11-10s4-9 9-9 9 4 9 9-4 9-9 9-10-4-10-10"
+      stroke-width="1.2"
+    />
+    <!-- trigger and bait -->
+    <line x1="120" y1="86" x2="120" y2="66" stroke-width="1.2" stroke-dasharray="3 3" />
+    <path d="M112 66h16l-8 10z" stroke-width="1.4" />
+    <!-- dimension line under the base -->
+    <line x1="18" y1="142" x2="168" y2="142" stroke-width="0.9" />
+    <path d="M18 138v8M168 138v8" stroke-width="0.9" />
+    <text class="bp-dim" x="93" y="137" text-anchor="middle">150</text>
+    <text class="bp-label" x="18" y="24">FIG. 1</text>
+    <text class="bp-note" x="18" y="40">TRAP ASSY — SPRUNG ARM</text>
+  </svg>
+
+  <!-- FIG. 2 — pulley and counterweight; the wheel turns and the weight breathes -->
+  <svg class="bp-fig bp-fig-pulley" viewBox="0 0 150 190" fill="none" stroke="currentColor">
+    <line x1="20" y1="26" x2="130" y2="26" stroke-width="1.6" />
+    <path d="M70 26v12M80 26v12" stroke-width="1.2" />
+    <g class="bp-wheel">
+      <circle cx="75" cy="56" r="18" stroke-width="1.6" />
+      <circle cx="75" cy="56" r="3" stroke-width="1.2" />
+      <path d="M75 38v36M57 56h36M62 43l26 26M88 43L62 69" stroke-width="0.9" />
+    </g>
+    <g class="bp-weight">
+      <line x1="57" y1="56" x2="57" y2="120" stroke-width="1.2" />
+      <line x1="93" y1="56" x2="93" y2="104" stroke-width="1.2" />
+      <rect x="40" y="120" width="34" height="26" stroke-width="1.6" />
+      <path d="M40 120l34 26M74 120l-34 26" stroke-width="0.7" />
+    </g>
+    <text class="bp-label" x="16" y="172">FIG. 2</text>
+    <text class="bp-note" x="16" y="186">PULLEY — 1:4</text>
+  </svg>
+
+  <!-- FIG. 3 — gear train, counter-rotating -->
+  <svg class="bp-fig bp-fig-gears" viewBox="0 0 170 130" fill="none" stroke="currentColor">
+    <g class="bp-gear-a">
+      <circle cx="54" cy="62" r="26" stroke-width="1.6" />
+      <circle cx="54" cy="62" r="19" stroke-width="0.8" stroke-dasharray="3 3" />
+      <circle cx="54" cy="62" r="4" stroke-width="1.2" />
+      <path
+        d="M54 36v-7M54 88v7M28 62h-7M80 62h7M36 44l-5-5M72 80l5 5M72 44l5-5M36 80l-5 5"
+        stroke-width="1.6"
+      />
+    </g>
+    <g class="bp-gear-b">
+      <circle cx="116" cy="78" r="18" stroke-width="1.6" />
+      <circle cx="116" cy="78" r="12" stroke-width="0.8" stroke-dasharray="3 3" />
+      <circle cx="116" cy="78" r="3" stroke-width="1.2" />
+      <path d="M116 60v-6M116 96v6M98 78h-6M134 78h6M103 65l-4-4M129 91l4 4M129 65l4-4M103 91l-4 4" stroke-width="1.5" />
+    </g>
+    <line x1="54" y1="62" x2="116" y2="78" stroke-width="0.7" stroke-dasharray="4 4" />
+    <text class="bp-label" x="14" y="112">FIG. 3</text>
+    <text class="bp-note" x="14" y="126">GEAR TRAIN 3:2</text>
+  </svg>
+
+  <!-- FIG. 4 — the escape: a trajectory worked out with an angle -->
+  <svg class="bp-fig bp-fig-arc" viewBox="0 0 180 130" fill="none" stroke="currentColor">
+    <line x1="18" y1="104" x2="166" y2="104" stroke-width="1.2" />
+    <path d="M18 104C54 24 128 24 158 96" stroke-width="1.4" stroke-dasharray="6 5" />
+    <circle class="bp-ball" cx="18" cy="104" r="5" stroke-width="1.4" />
+    <path d="M150 84l8 14-15 2z" stroke-width="1.2" />
+    <path d="M18 104l30-22" stroke-width="1" />
+    <path d="M46 104a28 28 0 00-9-20" stroke-width="0.9" />
+    <text class="bp-dim" x="54" y="100">45°</text>
+    <text class="bp-label" x="16" y="120">FIG. 4</text>
+    <text class="bp-note" x="16" y="134">TRAJECTORY</text>
+  </svg>
+
+  <!-- Title block, bottom right, like the corner of a drawing sheet -->
+  <svg class="bp-fig bp-fig-title" viewBox="0 0 230 74" fill="none" stroke="currentColor">
+    <rect x="1" y="1" width="228" height="72" stroke-width="1.4" />
+    <line x1="1" y1="26" x2="229" y2="26" stroke-width="1" />
+    <line x1="1" y1="50" x2="229" y2="50" stroke-width="1" />
+    <line x1="150" y1="26" x2="150" y2="73" stroke-width="1" />
+    <text class="bp-title" x="12" y="18">PORTFOLIO — SHEET 01</text>
+    <text class="bp-note" x="12" y="42">DRAWN BY N. CHAPRE</text>
+    <text class="bp-note" x="160" y="42">SCALE 1:4</text>
+    <text class="bp-note" x="12" y="66">REV. 2026</text>
+    <text class="bp-note" x="160" y="66">DWG C0SMOS</text>
+  </svg>
+</div>

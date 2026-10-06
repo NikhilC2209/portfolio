@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { themes, defaultTheme, themeIds, storageKey } from "../data/themes.js";
+import { themes, defaultTheme, themeIds, themeSchemes, storageKey } from "../data/themes.js";
 
 export default function ThemeSwitcher() {
   const [theme, setTheme] = useState(defaultTheme);
@@ -33,6 +33,7 @@ export default function ThemeSwitcher() {
 
   const selectTheme = (id) => {
     document.documentElement.dataset.theme = id;
+    document.documentElement.classList.toggle("dark", themeSchemes[id] !== "light");
     window.dispatchEvent(new Event("themechange"));
     setTheme(id);
     setOpen(false);
