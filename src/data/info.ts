@@ -9,13 +9,13 @@ export const info = {
   cv: "/resume.pdf",
 
   about: {
-    description: `I'm a grad student at Arizona State University pursuing my Masters in Computer Science, I've interned as a full stack developer in the past and still have that passion for experimenting with different tech stacks.
-    I am proficient in building web applications using MERN, Next JS and Astro.
-    I also have a solid foundation in Computer Science and take deep interest in Comuter Systems Security & Cryptography.
-    I also have some cool Computer Vision projects specifically Object Detection, tracking & segmentation on my github.
-    I'm currently volunteering for the SEFCOM LAB @ ASU and trying to dive deep into the world of Embedded Systems.
-    I also like public speaking and mentoring, you can check out my blog to get more info.
-    `,
+    // One entry per paragraph. **text** is set bold in the heading colour and
+    // [text](href) becomes a link (src/components/about_section/About.tsx).
+    description: [
+      `I recently started working as a **Cybersecurity Architect I** at **Torc Robotics** in Ann Arbor, Michigan. I completed my graduate studies from **Arizona State University** pursuing a Masters in Computer Science, where I got to hone my Cybersecurity skills especially in the domain of **Program and Systems Security**. Over my time at ASU I worked as a Research Assistant at the **SEFCOM Lab** and this opportunity allowed me to work under some of the top professors in Cybersecurity including Prof. Yan, Tiffany and Fish.`,
+      `Around this time I also joined **Shellphish** and **CTF Academy** and played a ton of CTFs under their banner and got a chance to meet some of the best hackers in the world. Even though most of my current work revolves around Cybersecurity I've also interned as a **full stack developer** in the past and still have that passion for experimenting with different tech stacks.`,
+      `I also have some cool **Computer Vision** projects specifically Object Detection, tracking & segmentation on my GitHub from my undergrad. I also take deep interest in **Cryptography** and try to read about it in my free time. I also like **public speaking and mentoring**, you can check out my [blog](/blog) to get more info.`,
+    ],
     education: [
       {
         title: "Self-Taught Developer Extraordinaire",

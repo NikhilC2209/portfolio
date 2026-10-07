@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Rating from '../../components/feed/Rating.astro';
+import { formatDate, hasBody, kindOf, labelOf, titleOf } from '../../components/feed/feed';
+import '../../styles/blog.css';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('feed');
+  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const kind = kindOf(entry);
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={`${titleOf(entry)} · Feed`}>
+  <article class="mx-auto my-12 w-11/12 max-w-3xl flex flex-col gap-6">
+    <a href="/feed" class="font-heading text-sm uppercase tracking-[0.08em] text-dk-text hover:text-accent">← Feed</a>
+    <span class="font-mono text-xs tracking-[0.14em] uppercase text-accent" data-hud="/// FEED.ENTRY">{formatDate(data.date)} · {labelOf(entry)}</span>
+
+    {data.image && (
+      <Image src={data.image} alt={data.alt} widths={[800, 1600]} sizes="(min-width: 768px) 768px, 100vw" class="hud-frame block w-full h-auto" />
+    )}
+    {kind === 'photo' && data.caption && <p class="m-0 font-mono text-sm text-dk-text">{data.caption}</p>}
+
+    {kind === 'media' && data.media && (
+      <header class="flex flex-col gap-3">
+        <h1 class="m-0 font-display text-3xl md:text-4xl">{data.media.title}</h1>
+        <div class="flex items-center gap-2 font-mono text-sm text-dk-text">
+          {data.media.rating !== undefined && <Rating value={data.media.rating} />}
+          {data.media.rating !== undefined && <span>{data.media.rating.toFixed(1)}</span>}
+          {data.media.meta && <span>· {data.media.meta}</span>}
+        </div>
+      </header>
+    )}
+
+    {kind === 'link' && data.link && (
+      <a href={data.link.url} target="_blank" rel="noopener" class="flex items-center gap-4 border border-secondary/20 p-4 hover:border-accent">
+        <span class="flex min-w-0 flex-col gap-1">
+          <span class="font-heading text-lg text-secondary">{data.link.title} ↗</span>
+          <span class="font-mono text-xs text-dk-text">{new URL(data.link.url).hostname.replace(/^www\./, '')}</span>
+        </span>
+      </a>
+    )}
+
+    {hasBody(entry) && (
+      <div class="content">
+        <Content />
+      </div>
+    )}
+  </article>
+</BaseLayout>

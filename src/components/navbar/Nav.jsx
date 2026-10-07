@@ -13,6 +13,8 @@ export default function Nav({ posts }) {
     { name: "Projects", href: "/#projects" },
     { name: "Blog", href: "/blog" },
     { name: "Writeups", href: "/writeups" },
+    // Feed is live at /feed; goes in the nav once it has enough real posts.
+    //{ name: "Feed", href: "/feed" },
     //{ name: "Thoughts", href: "/thoughts" },
   ];
 

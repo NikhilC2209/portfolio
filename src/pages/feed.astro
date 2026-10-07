@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FeedTile from '../components/feed/FeedTile.astro';
+import Example from '../components/about_section/Example.jsx';
+import Dismissible from '../components/Dismissible.jsx';
+import { byDateDesc, kindOf, kinds } from '../components/feed/feed';
+
+const entries = (await getCollection('feed')).sort(byDateDesc);
+const title = 'Feed';
+const text = ['Unfiltered. Unedited. Whatever I was thinking about at the time.', 1000];
+---
+
+<BaseLayout title={title}>
+  <section class="mx-auto my-12 w-11/12 lg:w-5/6 max-w-screen-xl">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10">
+      <div>
+        <h2 class="font-display text-6xl font-bold mb-4" data-hud="/// FEED.WALL">Feed</h2>
+        <h2 class="m-0">
+          <Example text={text} size="text-lg" speed={10} client:visible />
+        </h2>
+      </div>
+      <nav aria-label="Filter posts" class="feed-filters flex flex-wrap items-center gap-x-5 gap-y-1">
+        {kinds.map((kind, i) => (
+          <button type="button" data-filter={kind.id} aria-pressed={i === 0 ? 'true' : 'false'} class="py-3 font-heading text-sm uppercase tracking-[0.08em] text-dk-text border-b-2 border-transparent hover:text-accent">
+            {kind.label}
+          </button>
+        ))}
+        <a href="/rss.xml" class="py-3 font-mono text-xs tracking-[0.1em] text-dk-text hover:text-accent">RSS ↗</a>
+      </nav>
+    </div>
+
+    {entries.length ? (
+      <!-- Not a .hud-list: the ENTRY_nn numbering only shows on tiles with a heading,
+           which on a mixed wall reads as random gaps. -->
+      <ul class="columns-1 sm:columns-2 lg:columns-3 gap-5">
+        {entries.map((entry) => (
+          <li data-kind={kindOf(entry)} class="break-inside-avoid mb-5">
+            <FeedTile entry={entry} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="font-mono text-dk-text">Nothing here yet.</p>
+    )}
+    <p data-empty hidden class="font-mono text-dk-text">Nothing of that kind yet.</p>
+  </section>
+  <Dismissible client:visible />
+</BaseLayout>
+
+<style>
+  .feed-filters [aria-pressed='true'] {
+    color: rgb(var(--c-heading));
+    border-color: rgb(var(--c-heading));
+  }
+</style>
+
+<script>
+  // Kind filter: hides tiles that don't match the pressed chip. Pure show/hide, so the
+  // page works without it and the wall just shows everything.
+  const chips = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const tiles = document.querySelectorAll<HTMLElement>('[data-kind]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const kind = chip.dataset.filter;
+      let shown = 0;
+      chips.forEach((other) => other.setAttribute('aria-pressed', String(other === chip)));
+      tiles.forEach((tile) => {
+        const hide = kind !== 'all' && tile.dataset.kind !== kind;
+        tile.toggleAttribute('hidden', hide);
+        if (!hide) shown++;
+      });
+      empty?.toggleAttribute('hidden', shown > 0);
+    });
+  });
+</script>

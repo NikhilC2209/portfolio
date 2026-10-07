@@ -12,6 +12,8 @@ export default {
 			fontFamily: {
 				display: 'var(--font-display)',
 				heading: 'var(--font-heading)',
+				// Timestamps and small system labels (feed tiles)
+				mono: '"JetBrains Mono", monospace',
 			},
 			colors: {
 				// Light-mode tokens, used by themes with scheme: 'light' (the `dark` class

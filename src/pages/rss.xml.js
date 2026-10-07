@@ -1,6 +1,9 @@
 import rss from '@astrojs/rss';
 import sanitizeHtml from 'sanitize-html';
 import { useStoryblokApi, renderRichText } from '@storyblok/astro';
+import { getCollection } from 'astro:content';
+import { marked } from 'marked';
+import { titleOf } from '../components/feed/feed';
 
 const sections = [
     { starts_with: 'blog/', content_type: 'blogPost' },
@@ -36,6 +39,16 @@ export async function GET(context) {
         )
     );
 
+    // Feed posts live in src/content/feed/ rather than Storyblok.
+    const feedItems = (await getCollection('feed')).map((entry) => ({
+        title: titleOf(entry),
+        description: entry.data.caption ?? '',
+        link: `/feed/${entry.slug}/`,
+        pubDate: entry.data.date,
+        categories: entry.data.tags,
+        content: marked.parse(entry.body),
+    }));
+
     const items = responses
         .flatMap(({ data }) => data.stories ?? [])
         .map((story) => ({
@@ -52,11 +65,12 @@ export async function GET(context) {
                 },
             }),
         }))
+        .concat(feedItems)
         .sort((a, b) => b.pubDate - a.pubDate);
 
     return rss({
         title: 'c0smos.dev',
-        description: 'Blog posts, CTF writeups, and thoughts',
+        description: 'Blog posts, CTF writeups, thoughts, and the activity feed',
         site: context.site,
         items,
         customData: '<language>en-us</language>',
