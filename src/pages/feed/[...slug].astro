@@ -27,6 +27,10 @@ const { Content } = await entry.render();
     )}
     {kind === 'photo' && data.caption && <p class="m-0 font-mono text-sm text-dk-text">{data.caption}</p>}
 
+    {kind !== 'media' && data.title && (
+      <h1 class="m-0 font-display text-3xl md:text-4xl">{data.title}</h1>
+    )}
+
     {kind === 'media' && data.media && (
       <header class="flex flex-col gap-3">
         <h1 class="m-0 font-display text-3xl md:text-4xl">{data.media.title}</h1>

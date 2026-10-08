@@ -49,6 +49,7 @@ export function byDateDesc(a: FeedEntry, b: FeedEntry) {
 // the link title, else the first line of the body, else the date.
 export function titleOf(entry: FeedEntry) {
   if (entry.data.media) return entry.data.media.title;
+  if (entry.data.title) return entry.data.title;
   if (entry.data.link) return entry.data.link.title;
   const firstLine = entry.body.trim().split('\n')[0]?.replace(/^#+\s*/, '').trim();
   if (firstLine) return firstLine.length > 80 ? firstLine.slice(0, 77) + '…' : firstLine;

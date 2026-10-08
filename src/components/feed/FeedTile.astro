@@ -13,8 +13,8 @@ const kind = kindOf(entry);
 const label = `${formatDate(data.date)} · ${labelOf(entry)}`;
 const { Content } = await entry.render();
 
-// A short, picture-less take is set large, like a pull quote.
-const isOneLiner = kind === 'take' && !data.image && entry.body.trim().length < 100;
+// A short, picture-less, untitled take is set large, like a pull quote.
+const isOneLiner = kind === 'take' && !data.image && !data.title && entry.body.trim().length < 100;
 ---
 
 <a class="hud-card block" href={`/feed/${entry.slug}/`}>
@@ -28,6 +28,10 @@ const isOneLiner = kind === 'take' && !data.image && entry.body.trim().length < 
 
     <div class:list={['flex flex-col gap-3', kind === 'photo' ? 'p-3' : 'p-5']}>
       <span class="font-mono text-[11px] tracking-[0.14em] uppercase text-accent">{label}</span>
+
+      {kind !== 'media' && data.title && (
+        <h2 class="m-0 font-heading text-xl leading-tight text-secondary">{data.title}</h2>
+      )}
 
       {kind === 'media' && data.media && (
         <>

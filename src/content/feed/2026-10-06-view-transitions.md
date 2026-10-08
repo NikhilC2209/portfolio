@@ -1,5 +1,6 @@
 ---
 date: 2026-10-06T23:41
+title: Battle intro, now with View Transitions
 tags: [tech]
 ---
 

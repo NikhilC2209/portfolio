@@ -14,6 +14,9 @@ const feed = defineCollection({
   schema: ({ image }) =>
     z.object({
       date: z.coerce.date(),
+      // Optional heading, mainly so a text-only tile has an anchor. Media posts take
+      // theirs from media.title instead.
+      title: z.string().optional(),
       // Picture next to the markdown file, e.g. ./2026-10-03-skate.jpg
       image: image().optional(),
       alt: z.string().default(''),
