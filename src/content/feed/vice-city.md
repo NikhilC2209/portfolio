@@ -1,5 +1,5 @@
 ---
-date: 2026-10-17T00:08
+date: 2026-10-15T00:08
 image: ./vice-city-cover.png
 alt: Cover art
 media:
@@ -15,6 +15,8 @@ The setting, the storyline and the charachters go along so well that you feel li
 But I have real love for Tommy Vercetti, cause that is one cold, calculated mfer. After doing time for 15 years, he just wants to get back into the game and wants to claim everything for himself this time. But he is the most practical and empathetic perosn in the whole storyline who is just surrounded by the incompetent fools, all of whom just want a bigger slice by doing fuck all. Only Tommy has the charm and cool to handle things on the fly when everything is going to shit, hell half the characters would get themselves and everyone involved killed if not for Tommy (shoutout to my boy Phil), he is such a well-written character imo.
 
 I also love how Diaz is written and voiced, a typical druglord who has more money than braincells or patience, he is crude and unempathetic and throws temper tantrums all the time. I can tell Tommy is so fed up of his antics but he still has to work for him. Mfer just blows up a movie recorder because he forgot to plug it in, sums up his character pretty well.     
+
+![Mercedes at the viewpoint](./mercedes.png)
 
 And then there are these low poly baddies, I cannot 😭🙏 with the way she walks around. Also I've no idea how these games were out there without any backlash because there are so many unhinged cutscenes and dialogues, Also there's like literal pornography in the film studio missions. I really really love the radio in this game tho, genuinely hooked on to whatever they were selling or talking about, full-fledged conversations ranging from casual sexism to just straight up ragebaiting people on the air. It was so fun to listen to, also the soundtracks were really great too.
 

@@ -15,6 +15,24 @@ export function hasBody(entry: FeedEntry) {
   return entry.body.trim().length > 0;
 }
 
+export type Orientation = 'vertical' | 'horizontal';
+
+// Explicit `orientation` wins; otherwise a clearly landscape picture makes the post
+// horizontal (Astro reads the image's dimensions at build time).
+export function orientationOf(entry: FeedEntry): Orientation {
+  if (entry.data.orientation) return entry.data.orientation;
+  const img = entry.data.image;
+  if (img && img.width / img.height > 1.2) return 'horizontal';
+  return 'vertical';
+}
+
+// Bodies past this get clamped on the wall, with the full text on the post's own page.
+const LONG_BODY = 500;
+
+export function isLong(entry: FeedEntry) {
+  return entry.body.trim().length > LONG_BODY;
+}
+
 // See the comment on the collection schema (src/content/config.ts).
 export function kindOf(entry: FeedEntry): FeedKind {
   if (entry.data.media) return 'media';

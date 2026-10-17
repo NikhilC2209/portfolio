@@ -19,6 +19,10 @@ const feed = defineCollection({
       title: z.string().optional(),
       // Picture next to the markdown file, e.g. ./2026-10-03-skate.jpg
       image: image().optional(),
+      // How the tile sits on the wall: a horizontal post spans two columns with the
+      // picture beside the text. Left out, it follows the picture's shape — landscape
+      // → horizontal, anything else → vertical (src/components/feed/feed.ts).
+      orientation: z.enum(['vertical', 'horizontal']).optional(),
       alt: z.string().default(''),
       // Caption under a photo; ignored when the post has body text
       caption: z.string().optional(),

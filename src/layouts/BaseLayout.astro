@@ -7,7 +7,9 @@ import PokemonScene from "../components/PokemonScene.astro";
 import BlueprintScene from "../components/BlueprintScene.astro";
 import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, themeSchemes, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey } from "../data/themes.js";
 
-const { title } = Astro.props;
+// `wide` drops the page's container cap (1536px) so a page can size itself against
+// the full viewport — the feed wall does, to add a column on big monitors.
+const { title, wide = false } = Astro.props;
 // const posts = await Astro.glob("../pages/posts/*.md");
 const posts = ""
 
@@ -127,7 +129,7 @@ import "../styles/themes/blueprint.css";
     <BlueprintScene />
     <Nav client:visible posts={posts} />
     {/* <div class="container px-4 w-full lg:w-9/12 mx-auto"> */}
-    <div class="container px-4 w-full mx-auto">
+    <div class:list={['px-4 w-full mx-auto', !wide && 'container']}>
       <slot />
     </div>
     <TopButton client:only />

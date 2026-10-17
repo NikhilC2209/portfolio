@@ -4,15 +4,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FeedTile from '../components/feed/FeedTile.astro';
 import Example from '../components/about_section/Example.jsx';
 import Dismissible from '../components/Dismissible.jsx';
-import { byDateDesc, kindOf, kinds } from '../components/feed/feed';
+import { byDateDesc, kindOf, kinds, orientationOf } from '../components/feed/feed';
 
 const entries = (await getCollection('feed')).sort(byDateDesc);
 const title = 'Feed';
 const text = ['Unfiltered. Unedited. Whatever I was thinking about at the time.', 1000];
 ---
 
-<BaseLayout title={title}>
-  <section class="mx-auto my-12 w-11/12 lg:w-5/6 max-w-screen-xl">
+<BaseLayout title={title} wide>
+  <!-- Wider than the blog list: the tiles want the room. `wide` lifts the layout's
+       1536px container cap; 86% of the viewport up to 112rem, and on big monitors a
+       fourth wall column (below) keeps tiles about laptop width instead of stretching. -->
+  <section class="mx-auto my-12 w-11/12 lg:w-[86%] max-w-[112rem]">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10">
       <div>
         <h2 class="font-display text-6xl font-bold mb-4" data-hud="/// FEED.WALL">Feed</h2>
@@ -32,10 +35,12 @@ const text = ['Unfiltered. Unedited. Whatever I was thinking about at the time.'
 
     {entries.length ? (
       <!-- Not a .hud-list: the ENTRY_nn numbering only shows on tiles with a heading,
-           which on a mixed wall reads as random gaps. -->
-      <ul class="columns-1 sm:columns-2 lg:columns-3 gap-5">
+           which on a mixed wall reads as random gaps.
+           A grid rather than CSS columns so horizontal tiles can span two columns; the
+           script below packs it masonry-style once it runs. -->
+      <ul data-wall class="wall grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 min-[1800px]:grid-cols-4 gap-5 items-start">
         {entries.map((entry) => (
-          <li data-kind={kindOf(entry)} class="break-inside-avoid mb-5">
+          <li data-kind={kindOf(entry)} class:list={[orientationOf(entry) === 'horizontal' && 'sm:col-span-2']}>
             <FeedTile entry={entry} />
           </li>
         ))}
@@ -53,7 +58,38 @@ const text = ['Unfiltered. Unedited. Whatever I was thinking about at the time.'
     color: rgb(var(--c-heading));
     border-color: rgb(var(--c-heading));
   }
+  /* Masonry packing: 1px rows, each tile spanning its own height plus the gap, and
+     dense flow so tiles fill in under shorter neighbours. Only once the script has
+     measured the tiles — until then it's a plain grid with gaps, never overlap. */
+  .wall[data-ready] {
+    grid-auto-rows: 1px;
+    grid-auto-flow: dense;
+    row-gap: 0;
+  }
+  .wall[data-ready] > li {
+    padding-bottom: 1.25rem;
+  }
 </style>
+
+<script>
+  // Masonry: give every tile a row span equal to its rendered height. Re-measured
+  // whenever a tile's size changes (images loading, window resizing, filtering).
+  const wall = document.querySelector<HTMLElement>('[data-wall]');
+  if (wall && 'ResizeObserver' in window) {
+    const GAP = 20;
+    const items = Array.from(wall.querySelectorAll<HTMLElement>(':scope > li'));
+    const size = (li: HTMLElement) => {
+      const card = li.firstElementChild as HTMLElement | null;
+      if (card) li.style.gridRowEnd = `span ${Math.ceil(card.getBoundingClientRect().height) + GAP}`;
+    };
+    const observer = new ResizeObserver((changes) => {
+      for (const change of changes) size(change.target.parentElement as HTMLElement);
+    });
+    items.forEach((li) => li.firstElementChild && observer.observe(li.firstElementChild));
+    wall.dataset.ready = '';
+    items.forEach(size);
+  }
+</script>
 
 <script>
   // Kind filter: hides tiles that don't match the pressed chip. Pure show/hide, so the

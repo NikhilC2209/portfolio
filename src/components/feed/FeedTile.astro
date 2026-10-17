@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Rating from './Rating.astro';
-import { formatDate, hasBody, kindOf, labelOf, type FeedEntry } from './feed';
+import { formatDate, hasBody, isLong, kindOf, labelOf, orientationOf, type FeedEntry } from './feed';
 
 interface Props {
   entry: FeedEntry;
@@ -13,61 +13,82 @@ const kind = kindOf(entry);
 const label = `${formatDate(data.date)} · ${labelOf(entry)}`;
 const { Content } = await entry.render();
 
+// A horizontal tile spans two wall columns: the picture runs the full width, uncropped,
+// and underneath the heading sits beside the body text in two columns.
+const horizontal = orientationOf(entry) === 'horizontal';
+const twoColumnText = horizontal && hasBody(entry) && kind !== 'photo';
+const long = isLong(entry);
+
 // A short, picture-less, untitled take is set large, like a pull quote.
 const isOneLiner = kind === 'take' && !data.image && !data.title && entry.body.trim().length < 100;
+
+const widths = horizontal ? [600, 1200, 1600] : [400, 800];
+// Matches the wall's column count at each width (src/pages/feed.astro).
+const sizes = horizontal
+  ? '(min-width: 1800px) 880px, (min-width: 1024px) 780px, 100vw'
+  : '(min-width: 1800px) 440px, (min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw';
+// Vertical media covers are squared off; everything else keeps the picture's own shape,
+// with a height cap so a barely-landscape picture can't tower over a horizontal tile.
+const imageClass = horizontal
+  ? 'block w-full h-auto max-h-80 object-cover'
+  : kind === 'media'
+    ? 'block w-full aspect-square object-cover'
+    : 'block w-full h-auto';
 ---
 
 <a class="hud-card block" href={`/feed/${entry.slug}/`}>
-  <div class="tile flex flex-col border border-secondary/20 bg-surface transition duration-300 hover:border-accent">
-    {kind === 'photo' && data.image && (
-      <Image src={data.image} alt={data.alt} widths={[400, 800]} sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw" class="block w-full h-auto" loading="lazy" />
-    )}
-    {kind === 'media' && data.image && (
-      <Image src={data.image} alt={data.alt} widths={[400, 800]} sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw" class="block w-full aspect-square object-cover" loading="lazy" />
+  <div class:list={['tile flex flex-col border border-secondary/20 bg-surface transition duration-300 hover:border-accent', horizontal && 'is-horizontal']}>
+    {data.image && (kind !== 'take' || horizontal) && (
+      <Image src={data.image} alt={data.alt} widths={widths} sizes={sizes} class={imageClass} loading="lazy" />
     )}
 
-    <div class:list={['flex flex-col gap-3', kind === 'photo' ? 'p-3' : 'p-5']}>
-      <span class="font-mono text-[11px] tracking-[0.14em] uppercase text-accent">{label}</span>
+    <div class:list={[kind === 'photo' ? 'p-3' : 'p-5', twoColumnText ? 'grid gap-4 sm:grid-cols-[2fr_3fr] sm:gap-6' : 'flex flex-col gap-3']}>
+      <div class="flex flex-col gap-3 min-w-0">
+        <span class="font-mono text-[11px] tracking-[0.14em] uppercase text-accent">{label}</span>
 
-      {kind !== 'media' && data.title && (
-        <h2 class="m-0 font-heading text-xl leading-tight text-secondary">{data.title}</h2>
-      )}
+        {kind !== 'media' && data.title && (
+          <h2 class="m-0 font-heading text-xl leading-tight text-secondary">{data.title}</h2>
+        )}
 
-      {kind === 'media' && data.media && (
-        <>
-          <h2 class="m-0 font-heading text-xl leading-tight text-secondary">{data.media.title}</h2>
-          {(data.media.rating !== undefined || data.media.meta) && (
-            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs text-dk-text">
-              {data.media.rating !== undefined && <Rating value={data.media.rating} />}
-              {data.media.rating !== undefined && <span>{data.media.rating.toFixed(1)}</span>}
-              {data.media.meta && <span>· {data.media.meta}</span>}
-            </div>
-          )}
-        </>
-      )}
+        {kind === 'media' && data.media && (
+          <>
+            <h2 class="m-0 font-heading text-xl leading-tight text-secondary">{data.media.title}</h2>
+            {(data.media.rating !== undefined || data.media.meta) && (
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs text-dk-text">
+                {data.media.rating !== undefined && <Rating value={data.media.rating} />}
+                {data.media.rating !== undefined && <span>{data.media.rating.toFixed(1)}</span>}
+                {data.media.meta && <span>· {data.media.meta}</span>}
+              </div>
+            )}
+          </>
+        )}
 
-      {kind === 'link' && data.link && (
-        <span class="flex items-center gap-3">
-          <span class="flex h-11 w-11 flex-none items-center justify-center bg-primary text-secondary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7L12 19"></path></svg>
+        {kind === 'link' && data.link && (
+          <span class="flex items-center gap-3">
+            <span class="flex h-11 w-11 flex-none items-center justify-center bg-primary text-secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7L12 19"></path></svg>
+            </span>
+            <span class="flex min-w-0 flex-col gap-0.5">
+              <span class="font-heading text-base leading-snug text-secondary">{data.link.title}</span>
+              <span class="font-mono text-xs text-dk-text">{new URL(data.link.url).hostname.replace(/^www\./, '')}</span>
+            </span>
           </span>
-          <span class="flex min-w-0 flex-col gap-0.5">
-            <span class="font-heading text-base leading-snug text-secondary">{data.link.title}</span>
-            <span class="font-mono text-xs text-dk-text">{new URL(data.link.url).hostname.replace(/^www\./, '')}</span>
-          </span>
-        </span>
-      )}
+        )}
 
-      {kind === 'take' && data.image && (
-        <Image src={data.image} alt={data.alt} widths={[400, 800]} sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw" class="block w-full h-auto" loading="lazy" />
-      )}
+        {kind === 'take' && !horizontal && data.image && (
+          <Image src={data.image} alt={data.alt} widths={widths} sizes={sizes} class={imageClass} loading="lazy" />
+        )}
 
-      {hasBody(entry) ? (
-        <div class:list={['tile-body text-text', isOneLiner ? 'font-heading text-2xl leading-snug' : 'text-base leading-relaxed']}>
-          <Content />
+        {!hasBody(entry) && data.caption && <p class="m-0 font-mono text-xs text-dk-text">{data.caption}</p>}
+      </div>
+
+      {hasBody(entry) && (
+        <div class="flex flex-col gap-3 min-w-0">
+          <div class:list={['tile-body text-text', isOneLiner ? 'font-heading text-2xl leading-snug' : 'text-base leading-relaxed', long && 'clamped']}>
+            <Content />
+          </div>
+          {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading →</span>}
         </div>
-      ) : (
-        data.caption && <p class="m-0 font-mono text-xs text-dk-text">{data.caption}</p>
       )}
     </div>
   </div>
@@ -89,5 +110,15 @@ const isOneLiner = kind === 'take' && !data.image && !data.title && entry.body.t
   .tile-body :global(img) {
     max-width: 100%;
     height: auto;
+  }
+  /* Long bodies show their first lines on the wall; the post page has the rest. */
+  .tile-body.clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+    overflow: hidden;
+  }
+  .is-horizontal .tile-body.clamped {
+    -webkit-line-clamp: 6;
   }
 </style>
