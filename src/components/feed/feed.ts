@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import { Marked } from 'marked';
 
 export type FeedEntry = CollectionEntry<'feed'>;
 export type FeedKind = 'quote' | 'collage' | 'media' | 'link' | 'photo' | 'take';
@@ -15,6 +16,14 @@ export const kinds: { id: FeedKind | 'all'; label: string }[] = [
 
 export function hasBody(entry: FeedEntry) {
   return entry.body.trim().length > 0;
+}
+
+// Captions are one-line strings in the frontmatter but can carry inline markdown:
+// **bold**, *italic*, ~~struck~~, `code`. Captions sit inside the tile's own link, where
+// a nested <a> would be invalid HTML, so [links](…) are rendered as their text.
+const inline = new Marked({ gfm: true, renderer: { link: (_href, _title, text) => text } });
+export function inlineMd(text: string) {
+  return inline.parseInline(text) as string;
 }
 
 export type Orientation = 'vertical' | 'horizontal';

@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { formatDate, hasBody, headingSize, isLong, labelOf, type FeedEntry } from './feed';
+import { formatDate, hasBody, headingSize, inlineMd, isLong, labelOf, type FeedEntry } from './feed';
 
 interface Props {
   entry: FeedEntry;
@@ -25,7 +25,7 @@ const sizes = '(min-width: 1800px) 330px, (min-width: 1024px) 290px, (min-width:
       {gallery.map((item, i) => (
         <figure class="print m-0 flex flex-col gap-1.5 border border-secondary/20 bg-primary" data-slot={i < 3 ? String(i) : 'hidden'}>
           <Image src={item.src} alt={item.alt} widths={[400, 800]} sizes={sizes} class="block w-full aspect-[4/3] object-cover" loading="lazy" />
-          <figcaption class="font-mono text-[11px] leading-4 text-dk-text truncate">{item.caption ?? ' '}</figcaption>
+          <figcaption class="caption font-mono text-[11px] leading-4 text-dk-text truncate" set:html={item.caption ? inlineMd(item.caption) : '&nbsp;'} />
         </figure>
       ))}
     </div>
@@ -40,7 +40,7 @@ const sizes = '(min-width: 1800px) 330px, (min-width: 1024px) 290px, (min-width:
         {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading →</span>}
       </div>
     ) : (
-      data.caption && <p class="m-0 font-mono text-xs text-dk-text">{data.caption}</p>
+      data.caption && <p class="caption m-0 font-mono text-xs text-dk-text" set:html={inlineMd(data.caption)} />
     )}
   </div>
 </a>

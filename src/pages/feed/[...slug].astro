@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Rating from '../../components/feed/Rating.astro';
-import { formatDate, hasBody, headingSize, isLandscape, kindOf, labelOf, titleOf } from '../../components/feed/feed';
+import { formatDate, hasBody, headingSize, inlineMd, isLandscape, kindOf, labelOf, titleOf } from '../../components/feed/feed';
 import '../../styles/blog.css';
 
 export async function getStaticPaths() {
@@ -56,7 +56,7 @@ const gallery = data.gallery
     {kind !== 'quote' && data.image && (
       <Image src={data.image} alt={data.alt} widths={[800, 1600]} sizes="(min-width: 768px) 768px, 100vw" class="hud-frame block w-full h-auto" />
     )}
-    {kind === 'photo' && data.caption && <p class="m-0 font-mono text-sm text-dk-text">{data.caption}</p>}
+    {kind === 'photo' && data.caption && <p class="caption m-0 font-mono text-sm text-dk-text" set:html={inlineMd(data.caption)} />}
 
     {kind !== 'media' && kind !== 'quote' && data.title && (
       <h1 class:list={['m-0 font-display whitespace-pre-line', headingSize(data.title, 'page', 0, data.size)]}>{data.title}</h1>
@@ -87,7 +87,7 @@ const gallery = data.gallery
         <Content />
       </div>
     )}
-    {kind === 'collage' && !hasBody(entry) && data.caption && <p class="m-0 font-mono text-sm text-dk-text">{data.caption}</p>}
+    {kind === 'collage' && !hasBody(entry) && data.caption && <p class="caption m-0 font-mono text-sm text-dk-text" set:html={inlineMd(data.caption)} />}
 
     {kind === 'collage' && (
       <>
@@ -96,10 +96,10 @@ const gallery = data.gallery
              to the full-size file; with JS the link opens the lightbox instead. -->
         <div class="gallery columns-1 sm:columns-2 gap-3" data-gallery>
           {gallery.map((item, i) => (
-            <a href={item.full} class="hud-card block mb-3 break-inside-avoid" data-index={i} data-caption={item.caption ?? item.alt}>
+            <a href={item.full} class="hud-card block mb-3 break-inside-avoid" data-index={i} data-caption={item.caption ? inlineMd(item.caption) : item.alt}>
               <div class="border border-secondary/50 bg-surface transition duration-300 hover:border-accent">
                 <Image src={item.src} alt={item.alt} widths={[640, 1280]} sizes="(min-width: 1280px) 620px, (min-width: 640px) 50vw, 100vw" class="block w-full h-auto" loading="lazy" />
-                {item.caption && <span class="block px-2 py-1.5 font-mono text-[11px] text-dk-text">{item.caption}</span>}
+                {item.caption && <span class="caption block px-2 py-1.5 font-mono text-[11px] text-dk-text" set:html={inlineMd(item.caption)} />}
               </div>
             </a>
           ))}
@@ -109,7 +109,7 @@ const gallery = data.gallery
         <dialog data-lightbox class="m-0 h-full max-h-none w-full max-w-none bg-black/90 p-0 text-white backdrop:bg-black/80">
           <div class="flex h-full flex-col items-center justify-center gap-3 p-4">
             <img data-lightbox-img src="" alt="" class="max-h-[85vh] max-w-full object-contain" />
-            <p data-lightbox-caption class="m-0 min-h-5 font-mono text-xs text-white/70"></p>
+            <p data-lightbox-caption class="caption m-0 min-h-5 font-mono text-xs text-white/70"></p>
           </div>
           <button type="button" data-lightbox-prev aria-label="Previous picture" class="absolute left-2 top-1/2 -translate-y-1/2 h-11 w-11 bg-black/40 font-mono text-xl hover:bg-black/70">←</button>
           <button type="button" data-lightbox-next aria-label="Next picture" class="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 bg-black/40 font-mono text-xl hover:bg-black/70">→</button>
@@ -135,7 +135,8 @@ const gallery = data.gallery
       const link = links[current];
       img.src = link.href;
       img.alt = link.querySelector('img')?.alt ?? '';
-      caption.textContent = link.dataset.caption ?? '';
+      // Captions are inline markdown rendered to HTML at build time (see inlineMd).
+      caption.innerHTML = link.dataset.caption ?? '';
     };
 
     links.forEach((link, i) =>
