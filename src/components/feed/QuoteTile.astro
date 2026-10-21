@@ -1,0 +1,73 @@
+---
+import { Image } from 'astro:assets';
+import { formatDate, hasBody, headingSize, isLandscape, isLong, labelOf, type FeedEntry } from './feed';
+
+interface Props {
+  entry: FeedEntry;
+}
+
+// Someone else's words. With a picture the tile spans two wall columns: a portrait
+// picture sits on the left two-fifths with the quote beside it; a landscape one runs
+// full width, uncropped, with the quote underneath. No picture: one column of text.
+const { entry } = Astro.props;
+const { data } = entry;
+const quote = data.quote!;
+const label = `${formatDate(data.date)} · ${labelOf(entry)}`;
+const { Content } = await entry.render();
+const long = isLong(entry);
+const split = !!data.image && !isLandscape(data.image);
+const banner = !!data.image && isLandscape(data.image);
+---
+
+<a class="hud-card block" href={`/feed/${entry.slug}/`}>
+  <div class:list={['tile border border-secondary/20 bg-surface transition duration-300 hover:border-accent', data.image && 'is-horizontal', split ? 'grid sm:grid-cols-[2fr_3fr]' : 'flex flex-col']}>
+    {split && data.image && (
+      <Image src={data.image} alt={data.alt} widths={[400, 800]} sizes="(min-width: 640px) 320px, 100vw" class="block w-full aspect-video sm:aspect-auto sm:h-full sm:min-h-[280px] object-cover" loading="lazy" />
+    )}
+    {banner && data.image && (
+      <Image src={data.image} alt={data.alt} widths={[600, 1200, 1600]} sizes="(min-width: 1800px) 880px, (min-width: 1024px) 780px, 100vw" class="block w-full h-auto" loading="lazy" />
+    )}
+    <div class:list={['p-6 min-w-0', banner && hasBody(entry) ? 'grid gap-5 sm:grid-cols-[3fr_2fr] sm:gap-8' : 'flex flex-col justify-center gap-3']}>
+      <div class="flex flex-col gap-3 min-w-0">
+        <span class="font-mono text-[11px] tracking-[0.14em] uppercase text-accent">{label}</span>
+        <span class="quote-mark font-display text-6xl leading-[0.6] text-secondary" aria-hidden="true">“</span>
+        <p class:list={['m-0 font-heading text-text whitespace-pre-line', headingSize(quote.text, 'tile', 0, data.size)]}>{quote.text}</p>
+        <p class="m-0 font-mono text-xs tracking-wide text-dk-text">
+          <b class="font-semibold text-secondary">{quote.by}</b>{quote.source && ` · ${quote.source}`}
+        </p>
+      </div>
+      {hasBody(entry) && (
+        <div class:list={['flex flex-col gap-2 min-w-0', banner ? 'sm:self-center' : 'pt-1']}>
+          <div class:list={['tile-body text-sm leading-relaxed text-dk-text', long && 'clamped']}>
+            <Content />
+          </div>
+          {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading →</span>}
+        </div>
+      )}
+    </div>
+  </div>
+</a>
+
+<style>
+  .quote-mark {
+    height: 0.45em;
+  }
+  .tile-body :global(p) {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+  }
+  .tile-body :global(p + p) {
+    margin-top: 0.75em;
+  }
+  .tile-body :global(a) {
+    color: rgb(var(--c-heading));
+    text-decoration: underline;
+  }
+  .tile-body.clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+  }
+</style>

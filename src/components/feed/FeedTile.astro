@@ -1,7 +1,9 @@
 ---
 import { Image } from 'astro:assets';
 import Rating from './Rating.astro';
-import { formatDate, hasBody, isLong, kindOf, labelOf, orientationOf, type FeedEntry } from './feed';
+import QuoteTile from './QuoteTile.astro';
+import CollageTile from './CollageTile.astro';
+import { formatDate, hasBody, headingSize, isLong, kindOf, labelOf, orientationOf, type FeedEntry } from './feed';
 
 interface Props {
   entry: FeedEntry;
@@ -36,6 +38,11 @@ const imageClass = horizontal
     : 'block w-full h-auto';
 ---
 
+{kind === 'quote' ? (
+  <QuoteTile entry={entry} />
+) : kind === 'collage' ? (
+  <CollageTile entry={entry} />
+) : (
 <a class="hud-card block" href={`/feed/${entry.slug}/`}>
   <div class:list={['tile flex flex-col border border-secondary/20 bg-surface transition duration-300 hover:border-accent', horizontal && 'is-horizontal']}>
     {data.image && (kind !== 'take' || horizontal) && (
@@ -47,12 +54,12 @@ const imageClass = horizontal
         <span class="font-mono text-[11px] tracking-[0.14em] uppercase text-accent">{label}</span>
 
         {kind !== 'media' && data.title && (
-          <h2 class="m-0 font-heading text-xl leading-tight text-secondary">{data.title}</h2>
+          <h2 class:list={['m-0 font-heading text-secondary whitespace-pre-line', headingSize(data.title, 'tile', 1, data.size)]}>{data.title}</h2>
         )}
 
         {kind === 'media' && data.media && (
           <>
-            <h2 class="m-0 font-heading text-xl leading-tight text-secondary">{data.media.title}</h2>
+            <h2 class:list={['m-0 font-heading text-secondary whitespace-pre-line', headingSize(data.media.title, 'tile', 1, data.size)]}>{data.media.title}</h2>
             {(data.media.rating !== undefined || data.media.meta) && (
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs text-dk-text">
                 {data.media.rating !== undefined && <Rating value={data.media.rating} />}
@@ -84,7 +91,7 @@ const imageClass = horizontal
 
       {hasBody(entry) && (
         <div class="flex flex-col gap-3 min-w-0">
-          <div class:list={['tile-body text-text', isOneLiner ? 'font-heading text-2xl leading-snug' : 'text-base leading-relaxed', long && 'clamped']}>
+          <div class:list={['tile-body text-text', isOneLiner ? ['font-heading', headingSize(entry.body.trim(), 'tile', 0, data.size)] : 'text-base leading-relaxed', long && 'clamped']}>
             <Content />
           </div>
           {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading →</span>}
@@ -93,6 +100,7 @@ const imageClass = horizontal
     </div>
   </div>
 </a>
+)}
 
 <style>
   .tile-body :global(p) {

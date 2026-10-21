@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FeedTile from '../components/feed/FeedTile.astro';
 import Example from '../components/about_section/Example.jsx';
 import Dismissible from '../components/Dismissible.jsx';
-import { byDateDesc, kindOf, kinds, orientationOf } from '../components/feed/feed';
+import { byDateDesc, filtersOf, kinds, orientationOf } from '../components/feed/feed';
 
 const entries = (await getCollection('feed')).sort(byDateDesc);
 const title = 'Feed';
@@ -40,7 +40,7 @@ const text = ['Unfiltered. Unedited. Whatever I was thinking about at the time.'
            script below packs it masonry-style once it runs. -->
       <ul data-wall class="wall grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 min-[1800px]:grid-cols-4 gap-5 items-start">
         {entries.map((entry) => (
-          <li data-kind={kindOf(entry)} class:list={[orientationOf(entry) === 'horizontal' && 'sm:col-span-2']}>
+          <li data-kind={filtersOf(entry).join(' ')} class:list={[orientationOf(entry) === 'horizontal' && 'sm:col-span-2']}>
             <FeedTile entry={entry} />
           </li>
         ))}
@@ -92,8 +92,9 @@ const text = ['Unfiltered. Unedited. Whatever I was thinking about at the time.'
 </script>
 
 <script>
-  // Kind filter: hides tiles that don't match the pressed chip. Pure show/hide, so the
-  // page works without it and the wall just shows everything.
+  // Kind filter: hides tiles that don't match the pressed chip (a tile's data-kind can
+  // list several — a collage is also a photo). Pure show/hide, so the page works
+  // without it and the wall just shows everything.
   const chips = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
   const tiles = document.querySelectorAll<HTMLElement>('[data-kind]');
   const empty = document.querySelector<HTMLElement>('[data-empty]');
@@ -104,7 +105,7 @@ const text = ['Unfiltered. Unedited. Whatever I was thinking about at the time.'
       let shown = 0;
       chips.forEach((other) => other.setAttribute('aria-pressed', String(other === chip)));
       tiles.forEach((tile) => {
-        const hide = kind !== 'all' && tile.dataset.kind !== kind;
+        const hide = kind !== 'all' && !(tile.dataset.kind ?? '').split(' ').includes(kind ?? '');
         tile.toggleAttribute('hidden', hide);
         if (!hide) shown++;
       });

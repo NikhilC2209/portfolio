@@ -1,0 +1,142 @@
+---
+import { Image } from 'astro:assets';
+import { formatDate, hasBody, headingSize, isLong, labelOf, type FeedEntry } from './feed';
+
+interface Props {
+  entry: FeedEntry;
+}
+
+// Several pictures as a pile of prints: three show, fanned out, and hovering the tile
+// shuffles through the rest (script below). The post page has the full set.
+const { entry } = Astro.props;
+const { data } = entry;
+const gallery = data.gallery!;
+const label = `${formatDate(data.date)} · ${labelOf(entry)}`;
+const { Content } = await entry.render();
+const long = isLong(entry);
+const sizes = '(min-width: 1800px) 330px, (min-width: 1024px) 290px, (min-width: 640px) 40vw, 75vw';
+---
+
+<a class="hud-card block" href={`/feed/${entry.slug}/`}>
+  <div class="tile flex flex-col gap-4 border border-secondary/20 bg-surface p-5 transition duration-300 hover:border-accent">
+    <span class="font-mono text-[11px] tracking-[0.14em] uppercase text-accent">{label}</span>
+
+    <div class="pile relative" data-pile>
+      {gallery.map((item, i) => (
+        <figure class="print m-0 flex flex-col gap-1.5 border border-secondary/20 bg-primary" data-slot={i < 3 ? String(i) : 'hidden'}>
+          <Image src={item.src} alt={item.alt} widths={[400, 800]} sizes={sizes} class="block w-full aspect-[4/3] object-cover" loading="lazy" />
+          <figcaption class="font-mono text-[11px] leading-4 text-dk-text truncate">{item.caption ?? ' '}</figcaption>
+        </figure>
+      ))}
+    </div>
+
+    {data.title && <h2 class:list={['m-0 font-heading text-secondary whitespace-pre-line', headingSize(data.title, 'tile', 1, data.size)]}>{data.title}</h2>}
+
+    {hasBody(entry) ? (
+      <div class="flex flex-col gap-3 min-w-0">
+        <div class:list={['tile-body text-base leading-relaxed text-text', long && 'clamped']}>
+          <Content />
+        </div>
+        {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading →</span>}
+      </div>
+    ) : (
+      data.caption && <p class="m-0 font-mono text-xs text-dk-text">{data.caption}</p>
+    )}
+  </div>
+</a>
+
+<style>
+  .pile {
+    aspect-ratio: 5 / 4;
+  }
+  .print {
+    position: absolute;
+    width: 74%;
+    padding: 0.5rem 0.5rem 0.4rem;
+    transition:
+      transform 0.5s ease,
+      left 0.5s ease,
+      top 0.5s ease,
+      opacity 0.5s ease;
+  }
+  /* Three slots, front to back; everything else waits, invisible, behind the front print. */
+  .print[data-slot='0'] {
+    left: 12%;
+    top: 15%;
+    z-index: 3;
+    transform: rotate(-1deg);
+  }
+  .print[data-slot='1'] {
+    left: 24%;
+    top: 3%;
+    z-index: 2;
+    transform: rotate(5deg);
+  }
+  .print[data-slot='2'] {
+    left: 5%;
+    top: 8%;
+    z-index: 1;
+    transform: rotate(-7deg);
+  }
+  .print[data-slot='hidden'] {
+    left: 12%;
+    top: 15%;
+    z-index: 0;
+    opacity: 0;
+    transform: rotate(-1deg) scale(0.92);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .print {
+      transition: none;
+    }
+  }
+  .tile-body :global(p) {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+  }
+  .tile-body :global(p + p) {
+    margin-top: 0.75em;
+  }
+  .tile-body :global(a) {
+    color: rgb(var(--c-heading));
+    text-decoration: underline;
+  }
+  .tile-body.clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  // Hovering (or focusing) a collage tile sends the front print to the back of the
+  // pile every second or so, so the whole set comes round. Runs once per page.
+  const STEP_MS = 1100;
+  document.querySelectorAll<HTMLElement>('[data-pile]').forEach((pile) => {
+    let queue = Array.from(pile.children) as HTMLElement[];
+    if (queue.length < 2) return;
+    let timer: number | undefined;
+    const place = () => queue.forEach((print, i) => (print.dataset.slot = i < 3 ? String(i) : 'hidden'));
+    const step = () => {
+      queue = [...queue.slice(1), queue[0]];
+      place();
+    };
+    const start = () => {
+      if (timer !== undefined) return;
+      step();
+      timer = window.setInterval(step, STEP_MS);
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const tile = pile.closest('a') ?? pile;
+    tile.addEventListener('mouseenter', start);
+    tile.addEventListener('mouseleave', stop);
+    tile.addEventListener('focus', start);
+    tile.addEventListener('blur', stop);
+  });
+</script>
