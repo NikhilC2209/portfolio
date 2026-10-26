@@ -1,0 +1,66 @@
+---
+import { Image } from "astro:assets";
+import { info } from "../data/info";
+import Arrow from "./Arrow.astro";
+
+// Open source projects the site's owner contributes to or endorses, as cards in the
+// blog's .hud-card style so each theme's card border and hover apply. Logos are
+// grayscale until hovered, so coloured avatars don't fight the theme palette.
+const projects = info.openSource;
+
+---
+
+<div class="flex flex-col items-center space-y-8">
+  <div class="w-full lg:w-2/3 space-y-3">
+    <h1 class="font-display text-4xl font-bold" data-hud="/// UPSTREAM">Open source</h1>
+    <p class="text-lg leading-8 text-text">Projects I contribute to, or simply think deserve more hands.</p>
+  </div>
+
+  <ul class="w-full lg:w-2/3 m-0 p-0 list-none grid gap-6 md:grid-cols-2">
+    {projects.map((p) => (
+      <li class="m-0">
+        <article class="hud-card group block h-full">
+          <div class="flex h-full flex-col gap-4 border border-secondary/50 bg-surface p-5 transition duration-300 hover:border-accent">
+            <div class="flex items-center gap-4">
+              <Image
+                src={p.logo}
+                alt=""
+                width={112}
+                height={112}
+                class="h-14 w-14 shrink-0 rounded-md border border-secondary/30 bg-primary object-cover grayscale transition duration-300 group-hover:grayscale-0"
+              />
+              <div class="min-w-0">
+                <h2 class="m-0 font-heading text-2xl text-secondary"><a href={p.url} class="hover:text-accent">{p.name}</a></h2>
+                <span class:list={[
+                  "hud-tag inline-block mt-1 rounded px-2 py-0.5 font-mono text-[11px] tracking-[0.12em] uppercase",
+                  p.role === "contributor" ? "bg-code/15 text-code" : "bg-dk-accent/15 text-dk-accent",
+                ]}>{p.role === "contributor" ? "contributor" : "endorsed"}</span>
+              </div>
+            </div>
+
+            <p class="m-0 text-base leading-relaxed text-text">{p.tagline}</p>
+            <p class="m-0 text-sm leading-relaxed text-dk-text">{p.why}</p>
+
+            <div class="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-1 font-mono text-xs tracking-[0.08em]">
+              <a href={p.url} class="link">repo<Arrow class="ml-1.5" /></a>
+              {p.contributions && <a href={p.contributions} class="link">my issues &amp; PRs<Arrow class="ml-1.5" /></a>}
+            </div>
+          </div>
+        </article>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .link {
+    display: inline-flex;
+    align-items: center;
+    color: rgb(var(--c-heading));
+    transition: color 0.3s;
+  }
+
+  .link:hover {
+    color: rgb(var(--c-accent));
+  }
+</style>

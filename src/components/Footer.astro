@@ -1,0 +1,33 @@
+---
+import { info } from "../data/info";
+import { brandIcons } from "../data/icons";
+
+// The site colophon: what the site is built with, one monochrome mark per tool.
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-secondary/20 py-10">
+  <div class="container mx-auto flex flex-col items-center gap-6 px-4 md:flex-row md:justify-between">
+    <div class="flex flex-col items-center gap-4 md:flex-row md:gap-6">
+      <p class="m-0 font-mono text-sm tracking-[0.08em] text-dk-text">
+        Made with <span class="text-accent" aria-label="love">♥</span> using
+      </p>
+      <ul class="m-0 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 p-0 list-none">
+        {info.builtWith.map((tool) => {
+          const icon = brandIcons[tool.icon];
+          return (
+            <li class="m-0">
+              <a href={tool.url} class="group inline-flex items-center gap-2 font-mono text-sm tracking-[0.08em] text-dk-text transition hover:text-accent" title={tool.note}>
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="shrink-0 fill-secondary transition group-hover:fill-accent">
+                  <path d={icon.path} />
+                </svg>
+                <span>{tool.name}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+    <p class="m-0 font-mono text-xs tracking-[0.08em] text-dk-text">© {year} {info.name}</p>
+  </div>
+</footer>

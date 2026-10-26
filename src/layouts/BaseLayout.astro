@@ -5,6 +5,7 @@ import Pointer from "../components/Pointer";
 import StarField from "../components/StarField";
 import PokemonScene from "../components/PokemonScene.astro";
 import BlueprintScene from "../components/BlueprintScene.astro";
+import Footer from "../components/Footer.astro";
 import { themeCss, defaultTheme, themeIds, storageKey, themePreloads, themeSchemes, trailStorageKey, trailPaletteIds, textScrollThemes, battleIntroThemes, battleIntroSessionKey } from "../data/themes.js";
 
 // `wide` drops the page's container cap (1536px) so a page can size itself against
@@ -132,6 +133,7 @@ import "../styles/themes/blueprint.css";
     <div class:list={['px-4 w-full mx-auto', !wide && 'container']}>
       <slot />
     </div>
+    <Footer />
     <TopButton client:only />
     <Pointer client:only />
     <script>

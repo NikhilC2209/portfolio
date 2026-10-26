@@ -1,11 +1,16 @@
+import frontCover from "../assets/front-cover.jpg";
+import angrLogo from "../assets/oss/angr.png";
+import pwndbgLogo from "../assets/oss/pwndbg.png";
+
 export const info = {
   name: "Nikhil Chapre",
   brief_description:
-    "I'm a mischievous full stack developer with a knack for troublemaking.",
-  role: "Full Stack Developer",
-  picture: "/portfolio.jpg",
-  picture_alt: "Bart Simpson",
-  location: "Springfield, USA",
+    "A cybersecurity researcher.",
+  role: "Cybersecurity Architect I",
+  // Imported from src/assets so Astro resizes it; the home page crops it to a circle.
+  picture: frontCover,
+  picture_alt: "Portfolio Cover Image",
+  location: "Ann Arbor, USA",
   cv: "/resume.pdf",
 
   about: {
@@ -93,6 +98,47 @@ export const info = {
       img_alt: "Bart's Portfolio",
       img_path: "https://a-us.storyblok.com/f/1020021/1200x628/7666ae422f/next_auth_proj.png",
     },
+  ],
+
+  // Open source projects on the home page. `role` is "contributor" (with a link to
+  // your issues and pull requests there) or "fan" (endorsed, no contributions yet). Logos are the
+  // projects' GitHub avatars, kept in src/assets/oss.
+  openSource: [
+    {
+      name: "angr",
+      tagline: "Binary analysis platform in Python: symbolic execution, CFG recovery, decompilation.",
+      why: "Amazing symbolic execution platform, strengthened my understanding of how binaries and decompilers work behind the scenes.",
+      role: "contributor",
+      url: "https://github.com/angr/angr",
+      contributions: "https://github.com/angr/angr/issues?q=author%3ANikhilC2209",
+      logo: angrLogo,
+    },
+    {
+      name: "pwndbg",
+      tagline: "GDB and LLDB plugin that makes low-level debugging and exploit development bearable.",
+      why: "My goto GDB plugin for debugging any ELF, simply irreplacable.",
+      role: "contributor",
+      url: "https://github.com/pwndbg/pwndbg",
+      contributions: "https://github.com/pwndbg/pwndbg/issues?q=author%3ANikhilC2209",
+      logo: pwndbgLogo,
+    },
+  ] as {
+    name: string;
+    tagline: string;
+    why: string;
+    role: "contributor" | "fan";
+    url: string;
+    contributions?: string;
+    logo: ImageMetadata;
+  }[],
+
+  // The footer colophon. `icon` is a key in src/data/icons.ts.
+  builtWith: [
+    { name: "Astro", icon: "astro", url: "https://astro.build", note: "static site" },
+    { name: "Tailwind", icon: "tailwindcss", url: "https://tailwindcss.com", note: "styling" },
+    { name: "Storyblok", icon: "storyblok", url: "https://www.storyblok.com", note: "blog content" },
+    { name: "Cloudflare Pages", icon: "cloudflarepages", url: "https://pages.cloudflare.com", note: "hosting" },
+    { name: "GitHub", icon: "github", url: "https://github.com/NikhilC2209/portfolio", note: "source" },
   ],
 
   contact: {

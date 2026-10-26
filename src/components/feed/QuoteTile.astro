@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { formatDate, hasBody, headingSize, isLandscape, isLong, labelOf, type FeedEntry } from './feed';
+import Arrow from '../Arrow.astro';
 
 interface Props {
   entry: FeedEntry;
@@ -41,7 +42,7 @@ const banner = !!data.image && isLandscape(data.image);
           <div class:list={['tile-body text-sm leading-relaxed text-dk-text', long && 'clamped']}>
             <Content />
           </div>
-          {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading →</span>}
+          {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading <Arrow class="ml-1" /></span>}
         </div>
       )}
     </div>

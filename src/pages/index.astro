@@ -4,6 +4,7 @@ import { info } from "../data/info";
 import ProjectCarousel from "../components/projects_section/ProjectCarousel";
 import Contact from "../components/contact_section/Contact";
 import About from "../components/about_section/About";
+import OpenSource from "../components/OpenSource.astro";
 import Example from "../components/about_section/Example.jsx";
 
 import { Image } from "astro:assets";
@@ -35,10 +36,12 @@ const trainer = info.name.split(" ")[0].toUpperCase();
 
 const about=[
         // Same substring at the start will only be typed out once, initially
+        'Cybersecurity Architect',
+        1000,
+        'CTF Player',
+        1000,
         'Full Stack Developer',
         1000, // wait 1s before replacing "Mice" with "Hamsters"
-        'Public Speaker',
-        1000,
         'Technical Writer',
         1000,
         'Research Enthusiast',
@@ -59,12 +62,20 @@ const about=[
           <span class="pkmn-status-hp"><span>HP</span><span class="pkmn-hp-bar"></span></span>
         </div>
         <div class="profile-pic">
+          {/* A square box with object-cover crops the photo to a true circle instead of
+              stretching it to fit. The photo is wide, so the circle shows its full height
+              and object-position picks which part of the width: 33% puts the body in the
+              middle of the circle. The sizes hint is the photo's scaled width before the
+              crop (box height x 16/9), not the box width, or the browser picks a version
+              too small for the circle and it looks soft. */}
           <Image
             src={info.picture}
             alt={info.picture_alt}
-            width={200}
-            height={200}
-            class="lg:h-[32rem] lg:w-[36rem] h-40 w-40 rounded-full -rotate-6 space-x-8"
+            width={1600}
+            height={900}
+            widths={[640, 1024, 1600, 2400]}
+            sizes="(min-width: 1024px) 800px, 285px"
+            class="lg:h-[28rem] lg:w-[28rem] h-40 w-40 rounded-full object-cover object-[33%_50%]"
           />
         </div>
       </div>
@@ -93,12 +104,18 @@ const about=[
     <About about={info.about} client:visible />
   </section>
 
-{   <section
+  <section class="lg:mt-28 lg:mb-32 my-20 mx-2" id="open-source">
+    <OpenSource />
+  </section>
+
+{/* Projects are parked for now; the carousel and its data in info.ts stay for when
+    they come back. The nav link is commented out alongside (Nav.jsx). */}
+{/* <section
     class="lg:h-screen lg:m-0 my-20 mx-2 flex-col flex justify-center w-full"
     id="projects"
   >
     <ProjectCarousel projects={info.projects} client:only />
-  </section> }
+  </section> */}
 
 {/* <section
     class="lg:h-screen lg:m-0 my-20 mx-2 flex-col flex justify-center w-full"

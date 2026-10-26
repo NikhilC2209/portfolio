@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { formatDate, hasBody, headingSize, inlineMd, isLong, labelOf, type FeedEntry } from './feed';
+import Arrow from '../Arrow.astro';
 
 interface Props {
   entry: FeedEntry;
@@ -37,7 +38,7 @@ const sizes = '(min-width: 1800px) 330px, (min-width: 1024px) 290px, (min-width:
         <div class:list={['tile-body text-base leading-relaxed text-text', long && 'clamped']}>
           <Content />
         </div>
-        {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading →</span>}
+        {long && <span class="font-mono text-xs tracking-[0.1em] text-secondary">Continue reading <Arrow class="ml-1" /></span>}
       </div>
     ) : (
       data.caption && <p class="caption m-0 font-mono text-xs text-dk-text" set:html={inlineMd(data.caption)} />

@@ -10,7 +10,8 @@ export default function Nav({ posts }) {
 
   const navLinks = [
     { name: "About", href: "/#about" },
-    { name: "Projects", href: "/#projects" },
+    // Projects section is parked (index.astro); link returns with it.
+    //{ name: "Projects", href: "/#projects" },
     { name: "Blog", href: "/blog" },
     { name: "Writeups", href: "/writeups" },
     // Feed is live at /feed; goes in the nav once it has enough real posts.

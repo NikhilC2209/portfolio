@@ -1,0 +1,19 @@
+---
+// A text-sized arrow. The mono font's → glyph is tiny, so links draw this instead; it
+// inherits the text colour. `dir` flips it for back links.
+interface Props {
+  dir?: "right" | "left";
+  class?: string;
+}
+const { dir = "right", class: className = "" } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 16 16"
+  width="1em"
+  height="1em"
+  aria-hidden="true"
+  class:list={["inline-block align-[-0.125em]", dir === "left" && "rotate-180", className]}
+>
+  <path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>

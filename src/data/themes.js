@@ -108,7 +108,7 @@ export const themes = [
   {
     id: 'starwars',
     label: 'Star Wars',
-    blurb: 'Opening crawl and lightsabers',
+    blurb: 'May the Force be with you.',
     colors: {
       bg: '#02030A',
       heading: '#FFE81F',

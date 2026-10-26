@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Rating from '../../components/feed/Rating.astro';
+import Arrow from '../../components/Arrow.astro';
 import { formatDate, hasBody, headingSize, inlineMd, isLandscape, kindOf, labelOf, titleOf } from '../../components/feed/feed';
 import '../../styles/blog.css';
 
@@ -29,7 +30,7 @@ const gallery = data.gallery
 
 <BaseLayout title={`${titleOf(entry)} · Feed`}>
   <article class:list={['mx-auto my-12 w-11/12 flex flex-col gap-6', kind === 'collage' ? 'max-w-7xl' : 'max-w-3xl']}>
-    <a href="/feed" class="font-heading text-sm uppercase tracking-[0.08em] text-dk-text hover:text-accent">← Feed</a>
+    <a href="/feed" class="font-heading text-sm uppercase tracking-[0.08em] text-dk-text hover:text-accent"><Arrow dir="left" class="mr-1" /> Feed</a>
     <span class="font-mono text-xs tracking-[0.14em] uppercase text-accent" data-hud="/// FEED.ENTRY">{formatDate(data.date)} · {labelOf(entry)}</span>
 
     {kind === 'quote' && data.quote && (
@@ -111,8 +112,8 @@ const gallery = data.gallery
             <img data-lightbox-img src="" alt="" class="max-h-[85vh] max-w-full object-contain" />
             <p data-lightbox-caption class="caption m-0 min-h-5 font-mono text-xs text-white/70"></p>
           </div>
-          <button type="button" data-lightbox-prev aria-label="Previous picture" class="absolute left-2 top-1/2 -translate-y-1/2 h-11 w-11 bg-black/40 font-mono text-xl hover:bg-black/70">←</button>
-          <button type="button" data-lightbox-next aria-label="Next picture" class="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 bg-black/40 font-mono text-xl hover:bg-black/70">→</button>
+          <button type="button" data-lightbox-prev aria-label="Previous picture" class="absolute left-2 top-1/2 -translate-y-1/2 h-11 w-11 bg-black/40 flex items-center justify-center hover:bg-black/70"><Arrow dir="left" class="text-xl" /></button>
+          <button type="button" data-lightbox-next aria-label="Next picture" class="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 bg-black/40 flex items-center justify-center hover:bg-black/70"><Arrow class="text-xl" /></button>
           <button type="button" data-lightbox-close aria-label="Close" class="absolute right-2 top-2 h-11 w-11 bg-black/40 font-mono text-xl hover:bg-black/70">✕</button>
         </dialog>
       </>
