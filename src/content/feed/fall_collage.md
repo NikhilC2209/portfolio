@@ -25,5 +25,5 @@ gallery:
     alt: Standard park tree
   - src: ./detour2.jpg
     alt: Detour path 2
-tags: [Fall October]
+tags: [Fall]
 ---
