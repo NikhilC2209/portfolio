@@ -12,5 +12,5 @@ gallery:
   - src: ./halloween.jpg
     alt: Both Pumpkins
     caption: Talwiinder & ~~Angry~~ Mildly frustrated bird
-tags: [halloween]
+tags: [halloween October]
 ---
