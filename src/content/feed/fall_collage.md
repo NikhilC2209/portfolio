@@ -15,7 +15,7 @@ gallery:
     alt: Fall Tree leaves
   - src: ./fall-orange.jpg
     alt: Exquisite fall orange tree
-    caption: My favorite Fall tree so far
+    caption: This orange color looks so surreal
   - src: ./park.jpg
     alt: Park
   - src: ./park2.jpg

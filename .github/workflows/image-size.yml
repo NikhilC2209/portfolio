@@ -1,0 +1,62 @@
+# Fails if a push or PR adds or modifies an image larger than MAX_KB.
+#
+# This is a backstop for .githooks/pre-commit, which shrinks images before they
+# are committed. The hook is client-side and only active in clones where
+# `npm install` has run, so this catches a large image that slipped past it.
+# Only images changed in the push are checked; existing files are not rescanned.
+name: Image size check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check changed images
+        env:
+          MAX_KB: 1536
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -eu
+          if [ "$EVENT" = "pull_request" ]; then
+            range="origin/$BASE_REF...HEAD"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            range="$BEFORE..HEAD"
+          else
+            # New branch or force push with no reachable `before`: compare to the default branch
+            range="origin/$DEFAULT_BRANCH...HEAD"
+          fi
+          echo "Checking images changed in $range (limit ${MAX_KB} KB)"
+
+          fail=0
+          git diff --name-only --diff-filter=AM -z "$range" -- \
+            '*.jpg' '*.jpeg' '*.png' '*.gif' '*.webp' '*.avif' \
+            '*.JPG' '*.JPEG' '*.PNG' '*.GIF' '*.WEBP' '*.AVIF' \
+          | while IFS= read -r -d '' f; do
+              [ -f "$f" ] || continue
+              kb=$(( $(stat -c %s "$f") / 1024 ))
+              if [ "$kb" -gt "$MAX_KB" ]; then
+                echo "::error file=$f::$f is ${kb} KB, over the ${MAX_KB} KB limit. Run \`npm run shrink\` and recommit."
+                echo "- \`$f\` — ${kb} KB" >> "$GITHUB_STEP_SUMMARY"
+                echo "$f" >> /tmp/oversized
+              else
+                echo "ok  ${kb} KB  $f"
+              fi
+            done
+
+          if [ -s /tmp/oversized ]; then
+            sed -i '1i ## Oversized images\n' "$GITHUB_STEP_SUMMARY"
+            echo
+            echo "$(wc -l < /tmp/oversized) image(s) over ${MAX_KB} KB. Run \`npm run shrink\` locally and recommit."
+            exit 1
+          fi
+          echo "All changed images are under ${MAX_KB} KB."

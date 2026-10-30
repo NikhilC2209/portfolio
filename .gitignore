@@ -26,5 +26,6 @@ pnpm-debug.log*
 .DS_Store
 
 .VSCodeCounter
-# feed post template (src/content/feed/_template.md); underscore-prefixed files are ignored by Astro content collections
+# feed post templates
+src/content/feed/_examples/
 src/content/feed/_template.md

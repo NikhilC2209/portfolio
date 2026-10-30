@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+# Shrink any staged JPEG/PNG before it is committed, then re-stage it.
+# Activated by `npm install` (the prepare script sets core.hooksPath to .githooks).
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+files=$(git diff --cached --name-only --diff-filter=AM -- '*.jpg' '*.jpeg' '*.png' '*.JPG' '*.JPEG' '*.PNG')
+[ -z "$files" ] && exit 0
+
+echo "pre-commit: shrinking staged images"
+# shellcheck disable=SC2086
+node scripts/shrink-images.mjs $files 2>/dev/null
+# shellcheck disable=SC2086
+git add $files
