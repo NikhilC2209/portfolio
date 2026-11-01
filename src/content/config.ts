@@ -35,7 +35,7 @@ const feed = defineCollection({
       media: z
         .object({
           title: z.string(),
-          kind: z.enum(['game', 'film', 'show', 'book', 'album']),
+          kind: z.enum(['game', 'film', 'show', 'book', 'album', 'comic']),
           // playing, finished, dropped, rewatch, reading… free text
           status: z.string().optional(),
           // 0–5 in half steps
