@@ -1,0 +1,5 @@
+# Shell scripts and Node scripts must stay LF: Git for Windows runs hooks with
+# its bundled sh, which chokes on CRLF line endings.
+.githooks/*  text eol=lf
+scripts/*.mjs text eol=lf
+*.sh         text eol=lf

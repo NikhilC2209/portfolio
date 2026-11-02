@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Shrink any staged JPEG/PNG before it is committed, then re-stage it.
 # Activated by `npm install` (the prepare script sets core.hooksPath to .githooks).
 set -e
@@ -8,7 +8,11 @@ files=$(git diff --cached --name-only --diff-filter=AM -- '*.jpg' '*.jpeg' '*.pn
 [ -z "$files" ] && exit 0
 
 echo "pre-commit: shrinking staged images"
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit: node not found on PATH; cannot shrink images. Install Node or commit with --no-verify." >&2
+  exit 1
+fi
 # shellcheck disable=SC2086
-node scripts/shrink-images.mjs $files 2>/dev/null
+node scripts/shrink-images.mjs $files 2> >(grep -v -e 'VIPS-WARNING' -e '^$' >&2)
 # shellcheck disable=SC2086
 git add $files
